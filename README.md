@@ -59,7 +59,7 @@ A python-based application for typing practice with TUI (text user interface)
 ### Класс `TextOverseer`
 Содержит `TextGenerator`, а так же строки `current_word`, `input` и `error`.
 Также содержит ссылку на `Training`, к которому привязан.
-Метод `handle_char(char|backspace)`, который добавляет символ в `input`, также как-то обрабатывая его, если он неверный, в зависимости от режима, стоящего в `Training` (не добавляет никуда, либо добавляет в `error` и увеличевает количество ошибок в `Training.Statistics`, либо кидает исключение, которое поймается выше). Если `input` и `current_word` совпадали, а символ - пробел, то вызывает метод `Training.Statistics.add_word(current_word)`, и меняет слово на следующее в генераторе.
+Метод `handle_char(char|backspace)`, который добавляет символ в `input`, также как-то обрабатывая его, если он неверный, в зависимости от режима, стоящего в `Training` (не добавляет никуда, либо добавляет в `error` и увеличевает количество ошибок в `Training.Statistics`, либо кидает исключение, которое поймается в `Training`, вызвав `finish()`). Если `input` и `current_word` совпадали, а символ - пробел, то вызывает метод `Training.Statistics.add_word(current_word)`, и меняет слово на следующее в генераторе.
 
 ### Класс `Statictics`
 Поля `word_count`, `character_count`, `error_count`, `start_timer`, `user`.
