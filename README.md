@@ -37,6 +37,10 @@ A python-based application for typing practice with TUI (text user interface)
 
 Создание пользователей и хранение рекордов локально в csv-файлах
 
+## Стек
+
+Python 3.11
+
 ## Зависимости
 
 [blessed](https://github.com/jquast/blessed) - фреймворк для создания текстовых интерфейсов
