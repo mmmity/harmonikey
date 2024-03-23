@@ -135,7 +135,7 @@ class TestFileTextGenerator(unittest.TestCase):
             gen.next_word()
 
     def test_words_before(self):
-        test_text = ' '.join([random.choice(['a', 'b', 'c']) 
+        test_text = ' '.join([random.choice(['a', 'b', 'c'])
                               for _ in range(60)])
         self.create_text_file(test_text)
         gen = FileTextGenerator(self.filename)
@@ -158,7 +158,7 @@ class TestFileTextGenerator(unittest.TestCase):
             self.assertEqual(words[i], befores[i][2])
 
     def test_words_after(self):
-        test_text = ' '.join([random.choice(['a', 'b', 'c']) 
+        test_text = ' '.join([random.choice(['a', 'b', 'c'])
                               for _ in range(60)])
         self.create_text_file(test_text)
         gen = FileTextGenerator(self.filename)
@@ -177,7 +177,7 @@ class TestFileTextGenerator(unittest.TestCase):
             self.assertEqual(words[i + 1], afters[i][0])
 
     def test_words_before_number(self):
-        test_text = ' '.join([random.choice(['a', 'b', 'c']) 
+        test_text = ' '.join([random.choice(['a', 'b', 'c'])
                               for _ in range(60)])
         self.create_text_file(test_text)
         gen = FileTextGenerator(self.filename)
@@ -189,7 +189,7 @@ class TestFileTextGenerator(unittest.TestCase):
             gen.next_word()
 
     def test_words_after_number(self):
-        test_text = ' '.join([random.choice(['a', 'b', 'c']) 
+        test_text = ' '.join([random.choice(['a', 'b', 'c'])
                               for _ in range(60)])
         self.create_text_file(test_text)
         gen = FileTextGenerator(self.filename)

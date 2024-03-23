@@ -76,7 +76,7 @@ class RandomTextGenerator(TextGenerator):
         '''
         word_index = len(self.__pool) - (self.__poolsize + 1) // 2
         num_words = min(num_words, word_index)
-        return list(itertools.islice(self.__pool, 
+        return list(itertools.islice(self.__pool,
                                      word_index - num_words, word_index))
 
     def words_after(self, num_words: int) -> typing.List[str]:

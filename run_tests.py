@@ -1,4 +1,4 @@
-from tests.test_text_generator import TestRandomTextGenerator, TestFileTextGenerator
+from tests.test_text_generator import *
 import unittest
 
 import sys
