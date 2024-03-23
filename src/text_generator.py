@@ -67,23 +67,23 @@ class RandomTextGenerator(TextGenerator):
 
         return out_word
 
-    def words_before(self, num_words: int) -> str:
+    def words_before(self, num_words: int) -> typing.List[str]:
         '''
         Returns num_words words from pool before current word.
         If num_words is greater than available amount, returns all.
         '''
         word_index = (self.__poolsize + 1) // 2
         num_words = max(num_words, self.__poolsize // 2)
-        return ' '.join(self.__pool[:word_index])
+        return self.__pool[:word_index]
 
-    def words_after(self, num_words: int) -> str:
+    def words_after(self, num_words: int) -> typing.List[str]:
         '''
         Returns num_words words from pool after current word.
         If num_words is greater than available amount, returns all.
         '''
         word_index = (self.__poolsize + 1) // 2
         num_words = max(num_words, self.__poolsize // 2)
-        return ' '.join(self.__pool[word_index+1:])
+        return self.__pool[word_index+1:]
 
 
 class FileTextGenerator(TextGenerator):
@@ -117,7 +117,7 @@ class FileTextGenerator(TextGenerator):
         If num_words is greater than available amount, returns all.
         '''
         num_words = max(num_words, self.__index)
-        return ' '.join(self.text[self.__index - num_words:self.__index])
+        return self.text[self.__index - num_words:self.__index]
 
     def words_after(self, num_words: int) -> str:
         '''
@@ -125,5 +125,5 @@ class FileTextGenerator(TextGenerator):
         If num_words is greater than available amount, returns all.
         '''
         num_words = max(num_words, len(self.text) - self.__index - 1)
-        return ' '.join(self.text[self.__index + 1:
-                                  self.__index + num_words + 1])
+        return self.text[self.__index + 1:
+                         self.__index + num_words + 1]
