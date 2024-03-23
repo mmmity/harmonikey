@@ -75,8 +75,9 @@ class RandomTextGenerator(TextGenerator):
         If num_words is greater than available amount, returns all.
         '''
         word_index = len(self.__pool) - (self.__poolsize + 1) // 2
-        num_words = max(num_words, self.__poolsize // 2)
-        return list(itertools.islice(self.__pool, word_index))
+        num_words = min(num_words, word_index)
+        return list(itertools.islice(self.__pool, 
+                                     word_index - num_words, word_index))
 
     def words_after(self, num_words: int) -> typing.List[str]:
         '''
@@ -84,9 +85,9 @@ class RandomTextGenerator(TextGenerator):
         If num_words is greater than available amount, returns all.
         '''
         word_index = len(self.__pool) - (self.__poolsize + 1) // 2
-        num_words = max(num_words, self.__poolsize // 2)
+        num_words = min(num_words, self.__poolsize // 2)
         return list(itertools.islice(self.__pool,
-                                     word_index+1, len(self.__pool)))
+                                     word_index+1, word_index+1+num_words))
 
 
 class FileTextGenerator(TextGenerator):
@@ -120,7 +121,7 @@ class FileTextGenerator(TextGenerator):
         Returns num_words before index.
         If num_words is greater than available amount, returns all.
         '''
-        num_words = max(num_words, self.__index)
+        num_words = min(num_words, self.__index)
         return list(itertools.islice(self.text,
                                      self.__index - num_words, self.__index))
 
@@ -129,6 +130,6 @@ class FileTextGenerator(TextGenerator):
         Returns num_words after index.
         If num_words is greater than available amount, returns all.
         '''
-        num_words = max(num_words, len(self.text) - self.__index - 1)
+        num_words = min(num_words, len(self.text) - self.__index - 1)
         return list(itertools.islice(self.text, self.__index + 1,
                                      self.__index + num_words + 1))
