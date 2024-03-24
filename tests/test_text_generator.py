@@ -31,6 +31,21 @@ class TestRandomTextGenerator(unittest.TestCase):
 
         for _ in range(60):
             self.assertIn(gen.next_word(), ['a', 'b', 'c', 'd'])
+            self.assertIn(gen.current_word(), ['a', 'b', 'c', 'd'])
+
+    def test_current_word(self):
+        self.create_vocab_file(['a', 'b', 'c', 'd'])
+        gen = RandomTextGenerator(self.filename, 4)
+        self.clean_up()
+
+        for _ in range(60):
+            word = gen.current_word()
+            for __ in range(60):
+                self.assertEqual(gen.current_word(), word)
+            gen.next_word()
+        
+        for _ in range(60):
+            self.assertEqual(gen.current_word(), gen.next_word())
 
     def test_words_before(self):
         self.create_vocab_file(['a', 'b', 'c', 'd'])
@@ -133,6 +148,21 @@ class TestFileTextGenerator(unittest.TestCase):
 
         with self.assertRaises(EndOfFile):
             gen.next_word()
+    
+    def test_current_word(self):
+        test_text = 'A b C d E; f G3, стопицот ' * 600
+        self.create_text_file(test_text)
+        gen = FileTextGenerator(self.filename)
+        self.clean_up()
+
+        for _ in range(60):
+            word = gen.current_word()
+            for __ in range(60):
+                self.assertEqual(gen.current_word(), word)
+            gen.next_word()
+        
+        for _ in range(60):
+            self.assertEqual(gen.current_word(), gen.next_word())
 
     def test_words_before(self):
         test_text = ' '.join([random.choice(['a', 'b', 'c'])

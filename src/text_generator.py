@@ -19,6 +19,13 @@ class TextGenerator(abc.ABC):
         pass
 
     @abc.abstractmethod
+    def current_word(self) -> str:
+        '''
+        Returns current word from generator.
+        '''
+        pass
+
+    @abc.abstractmethod
     def words_before(self, num_words: int) -> str:
         '''
         Returns num_words before the current word
@@ -68,6 +75,13 @@ class RandomTextGenerator(TextGenerator):
             self.__pool.pop(0)
 
         return out_word
+    
+    def current_word(self) -> str:
+        '''
+        Returns word from pool on active position.
+        '''
+        word_index = (self.__poolsize + 1) // 2
+        return self.__pool[-word_index]
 
     def words_before(self, num_words: int) -> typing.List[str]:
         '''
@@ -113,6 +127,12 @@ class FileTextGenerator(TextGenerator):
         self.__index += 1
 
         return out_word
+
+    def current_word(self):
+        '''
+        Returns word from text on position index.
+        '''
+        return self.text[self.__index]
 
     def words_before(self, num_words: int) -> str:
         '''
