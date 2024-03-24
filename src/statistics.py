@@ -23,7 +23,7 @@ class Statistics:
         Adding word, which was successfully typed by user
         '''
         self.word_count += 1
-        self.character_count += len(str)
+        self.character_count += len(word)
 
     def get_wpm(self) -> float:
         '''
@@ -36,17 +36,17 @@ class Statistics:
         '''
         Return cpm (characters per minute) for current Statistics
         '''
-        elapsed = time.perf_counter() - self.start_timer
-        return 60.0 * self.character_count / elapsed
+        elapsed = time.perf_counter_ns() - self.start_timer
+        return 60.0 * 1000000000.0 * self.character_count / elapsed
 
     def save_to_file(self, path: str):
-        to_write = ';'.join(self.user,
-                            self.text_tag,
-                            self.mode,
-                            str(self.word_count),
-                            str(self.character_count),
-                            str(time.perf_counter_ns() - self.start_timer),
-                            str(self.error_count))
+        to_write = ';'.join([self.user,
+                             self.text_tag,
+                             self.mode,
+                             str(self.word_count),
+                             str(self.character_count),
+                             str(time.perf_counter_ns() - self.start_timer),
+                             str(self.error_count)])
         to_write += '\n'
 
         with open(path, 'a') as stats_file:
@@ -89,18 +89,20 @@ class FileStatistics:
         Appends all entries from filename to containers.
         If file is malformed (e. g. wrong line format), raises TypeError.
         '''
+        new_entries = []
         with open(filename, 'r') as stats_file:
             for line in stats_file.readlines():
-                splitted = line.split()
+                splitted = line.rstrip().split(';')
                 try:
                     entry = self.Entry(splitted[0], splitted[1], splitted[2],
                                        int(splitted[3]), int(splitted[4]),
                                        int(splitted[5]), int(splitted[6]))
-                except [IndexError, TypeError]:
+                except (IndexError, TypeError):
                     raise TypeError("Wrong file format")
-                self.entries.append(entry)
+                new_entries.append(entry)
 
-        for entry in self.entries:
+        self.entries += new_entries
+        for entry in new_entries:
             if entry.user not in self.by_user.keys():
                 self.by_user[entry.user] = []
             self.by_user[entry.user].append(entry)
