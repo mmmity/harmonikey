@@ -49,7 +49,7 @@ class RandomTextGenerator(TextGenerator):
         with open(filename, 'r') as file:
             self.vocab = file.read().split()
         self.__poolsize = init_poolsize * 2 - 1
-        self.__pool = collections.deque()
+        self.__pool = []
 
         for _ in range(init_poolsize):
             self.__pool.append(random.choice(self.vocab))
@@ -65,7 +65,7 @@ class RandomTextGenerator(TextGenerator):
 
         self.__pool.append(random.choice(self.vocab))
         if len(self.__pool) > self.__poolsize:
-            self.__pool.popleft()
+            self.__pool.pop(0)
 
         return out_word
 
@@ -76,8 +76,7 @@ class RandomTextGenerator(TextGenerator):
         '''
         word_index = len(self.__pool) - (self.__poolsize + 1) // 2
         num_words = min(num_words, word_index)
-        return list(itertools.islice(self.__pool,
-                                     word_index - num_words, word_index))
+        return self.__pool[word_index - num_words:word_index]
 
     def words_after(self, num_words: int) -> typing.List[str]:
         '''
@@ -86,8 +85,7 @@ class RandomTextGenerator(TextGenerator):
         '''
         word_index = len(self.__pool) - (self.__poolsize + 1) // 2
         num_words = min(num_words, self.__poolsize // 2)
-        return list(itertools.islice(self.__pool,
-                                     word_index+1, word_index+1+num_words))
+        return self.__pool[word_index+1:word_index+1+num_words]
 
 
 class FileTextGenerator(TextGenerator):
@@ -122,8 +120,7 @@ class FileTextGenerator(TextGenerator):
         If num_words is greater than available amount, returns all.
         '''
         num_words = min(num_words, self.__index)
-        return list(itertools.islice(self.text,
-                                     self.__index - num_words, self.__index))
+        return self.text[self.__index - num_words:self.__index]
 
     def words_after(self, num_words: int) -> str:
         '''
@@ -131,5 +128,4 @@ class FileTextGenerator(TextGenerator):
         If num_words is greater than available amount, returns all.
         '''
         num_words = min(num_words, len(self.text) - self.__index - 1)
-        return list(itertools.islice(self.text, self.__index + 1,
-                                     self.__index + num_words + 1))
+        return self.text[self.__index+1:self.__index+num_words+1]
