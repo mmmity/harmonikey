@@ -9,7 +9,7 @@ class TestStatistics(unittest.TestCase):
 
     def test_add_word(self):
         stats = Statistics('mmmity', 'test_text', '')
-        wordlist = ['Lorem', 'ipsum', 'dolor', 'sit', 'amet']
+        wordlist = ['Lorem', ' ipsum', ' dolor', ' sit', ' amet']
 
         self.assertEqual(stats.word_count, 0)
         self.assertEqual(stats.character_count, 0)
@@ -22,7 +22,7 @@ class TestStatistics(unittest.TestCase):
 
     def test_wpm(self):
         stats = Statistics('mmmity', 'test_text', '')
-        wordlist = ['Lorem', 'ipsum', 'dolor', 'sit', 'amet']
+        wordlist = ['Lorem', ' ipsum', ' dolor', ' sit', ' amet']
         for word in wordlist:
             stats.add_word(word)
 
@@ -31,19 +31,19 @@ class TestStatistics(unittest.TestCase):
 
     def test_cpm(self):
         stats = Statistics('mmmity', 'test_text', '')
-        wordlist = ['Lorem', 'ipsum', 'dolor', 'sit', 'amet']
+        wordlist = ['Lorem', ' ipsum', ' dolor', ' sit', ' amet']
         for word in wordlist:
             stats.add_word(word)
 
         time.sleep(5.0)
-        self.assertAlmostEqual(stats.get_cpm(), 264, delta=0.05)
+        self.assertAlmostEqual(stats.get_cpm(), 312, delta=0.05)
 
     def test_save(self):
         # Generating random filename so no collisions occur
         filename = random.randbytes(8).hex() + 'stats.csv'
         stats_1 = Statistics('mmmity', 'test_text', '')
         stats_2 = Statistics('rom4ik', 'RANDOM.test_vocab', 'err')
-        wordlist = ['Lorem', 'ipsum', 'dolor', 'sit', 'amet']
+        wordlist = ['Lorem', ' ipsum', ' dolor', ' sit', ' amet']
 
         for word in wordlist:
             stats_1.add_word(word)
@@ -55,9 +55,9 @@ class TestStatistics(unittest.TestCase):
         stats_2.save_to_file(filename)
 
         expected_1 = ['mmmity', 'test_text', '',
-                      5, 22, 5000000000.0, 0]
+                      5, 26, 5000000000.0, 0]
         expected_2 = ['rom4ik', 'RANDOM.test_vocab', 'err',
-                      5, 22, 10000000000.0, 3]
+                      5, 26, 10000000000.0, 3]
         with open(filename, 'r') as stats_file:
             real_1 = stats_file.readline().split(';')
             real_2 = stats_file.readline().split(';')
