@@ -75,7 +75,7 @@ class RandomTextGenerator(TextGenerator):
             self.__pool.pop(0)
 
         return out_word
-    
+
     def current_word(self) -> str:
         '''
         Returns word from pool on active position.

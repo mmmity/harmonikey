@@ -97,7 +97,7 @@ class TestFileStatistics(unittest.TestCase):
         for s in stats:
             for w in wordlist:
                 s.add_word(w)
-        
+
         time.sleep(1)
         stats[1].save_to_file(self.file1_name)
         time.sleep(1)
@@ -148,12 +148,18 @@ class TestFileStatistics(unittest.TestCase):
         leha_best = fs.user_best_stats('leha')
 
         self.assertDictEqual(leha_best, {})
-        self.assertCountEqual(mmmity_best.keys(), ['good_text', 'test_text'])
-        self.assertCountEqual(rom4ik_best.keys(), ['good_text', 'test_text'])
-        self.assertAlmostEqual(mmmity_best['test_text'].time, 1000000000, delta=5000000)
-        self.assertAlmostEqual(mmmity_best['good_text'].time, 2000000000, delta=5000000)
-        self.assertAlmostEqual(rom4ik_best['test_text'].time, 3000000000, delta=5000000)
-        self.assertAlmostEqual(rom4ik_best['good_text'].time, 3000000000, delta=5000000)
+        self.assertCountEqual(mmmity_best.keys(),
+                              ['good_text', 'test_text'])
+        self.assertCountEqual(rom4ik_best.keys(),
+                              ['good_text', 'test_text'])
+        self.assertAlmostEqual(mmmity_best['test_text'].time,
+                               1000000000, delta=5000000)
+        self.assertAlmostEqual(mmmity_best['good_text'].time,
+                               2000000000, delta=5000000)
+        self.assertAlmostEqual(rom4ik_best['test_text'].time,
+                               3000000000, delta=5000000)
+        self.assertAlmostEqual(rom4ik_best['good_text'].time,
+                               3000000000, delta=5000000)
 
         self.clean_up()
 

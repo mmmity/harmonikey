@@ -43,7 +43,7 @@ class TestRandomTextGenerator(unittest.TestCase):
             for __ in range(60):
                 self.assertEqual(gen.current_word(), word)
             gen.next_word()
-        
+
         for _ in range(60):
             self.assertEqual(gen.current_word(), gen.next_word())
 
@@ -148,7 +148,7 @@ class TestFileTextGenerator(unittest.TestCase):
 
         with self.assertRaises(EndOfFile):
             gen.next_word()
-    
+
     def test_current_word(self):
         test_text = 'A b C d E; f G3, стопицот ' * 600
         self.create_text_file(test_text)
@@ -160,7 +160,7 @@ class TestFileTextGenerator(unittest.TestCase):
             for __ in range(60):
                 self.assertEqual(gen.current_word(), word)
             gen.next_word()
-        
+
         for _ in range(60):
             self.assertEqual(gen.current_word(), gen.next_word())
 
