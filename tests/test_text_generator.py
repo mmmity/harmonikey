@@ -164,6 +164,18 @@ class TestFileTextGenerator(unittest.TestCase):
         for _ in range(60):
             self.assertEqual(gen.current_word(), gen.next_word())
 
+    def test_current_word_raises(self):
+        test_text = 'A b C d E; f G3, стопицот '
+        self.create_text_file(test_text)
+        gen = FileTextGenerator(self.filename)
+        self.clean_up()
+
+        for _ in range(8):
+            gen.next_word()
+
+        with self.assertRaises(EndOfFile):
+            gen.current_word()
+
     def test_words_before(self):
         test_text = ' '.join([random.choice(['a', 'b', 'c'])
                               for _ in range(60)])

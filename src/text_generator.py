@@ -131,7 +131,10 @@ class FileTextGenerator(TextGenerator):
     def current_word(self):
         '''
         Returns word from text on position index.
+        Raises EndOfFile if end of file is reached.
         '''
+        if self.__index >= len(self.text):
+            raise EndOfFile
         return self.text[self.__index]
 
     def words_before(self, num_words: int) -> str:
