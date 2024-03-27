@@ -39,10 +39,18 @@ class Statistics:
         elapsed = time.perf_counter_ns() - self.start_timer
         return 60.0 * 1000000000.0 * self.character_count / elapsed
 
+    def get_elapsed_s(self) -> float:
+        '''
+        Returns time elapsed since initialization
+        in seconds
+        '''
+        elapsed = time.perf_counter_ns() - self.start_timer
+        return elapsed / 1000000000.0
+
     def save_to_file(self, path: str):
-        to_write = ';'.join([self.user,
-                             self.text_tag,
-                             self.mode,
+        to_write = ';'.join([str(self.user),
+                             str(self.text_tag),
+                             str(self.mode),
                              str(self.word_count),
                              str(self.character_count),
                              str(time.perf_counter_ns() - self.start_timer),
