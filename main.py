@@ -8,7 +8,6 @@ if __name__ == '__main__':
 
     program = Program()
     program.state.visualize()
-
     with term.cbreak(), term.hidden_cursor():
         # Makes terminal catch all keyboard keys without printing them
 
@@ -17,7 +16,7 @@ if __name__ == '__main__':
             # Reloads terminal every 0.05 s
             # to update timer
 
-            if key is not None:
+            if key != '':
                 program.state.handle_key(key)
 
             program.state.visualize()

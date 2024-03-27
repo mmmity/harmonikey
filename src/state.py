@@ -74,6 +74,9 @@ class Training(State):
         Initializes stats, overseer.
         '''
         super().__init__(program)
+        self.__updated_since = False
+        # Variable to redraw everything when necessary, not every tick
+
         self.gamemode = gamemode
         if textgen_type == TextgenType.RANDOM:
             self.statistics = Statistics('mmmity',
@@ -109,23 +112,44 @@ class Training(State):
         '''
         try:
             self.text_overseer.handle_char(key)
+            self.__updated_since = False
+            # We try to redraw words only after user pressed a key
         except WrongCharacter:
             self.__early_finish()
         except EndOfFile:
             self.__finish()
 
     def visualize(self):
+        if not self.__updated_since:
+            # We try not to revisualize everthing if not necessary
+            self.__updated_since = True
+            self.__visualize_words()
+        self.__visualize_timer()
+        # Although we need to redraw timer every tick so it is relevant
+
+    def __visualize_timer(self):
+        '''
+        Only resets timer in the left top corner.
+        '''
+        term = Terminal()
+        # Terminal object that prints special characters
+        print(term.home)
+
+        elapsed_str = format(self.statistics.get_elapsed_s(), '.2f')
+
+        print(term.white(elapsed_str) + ' s')
+
+    def __visualize_words(self):
         '''
         Visualizes training state.
         '''
         term = Terminal()
         # Terminal object that prints special characters
 
-        print(term.home + term.clear + term.color_black())
-        # Sets background color to black, clears, hides cursor
+        print(term.home + term.clear)
+        # Moves cursor clears
 
-        print(term.white(str(round(self.statistics.get_elapsed_s(),
-                                   2)) + ' s'))
+        self.__visualize_timer()
         print(term.white(str(self.statistics.word_count) + ' words'))
         # Prints elapsed time and number of words typed
 
