@@ -121,7 +121,6 @@ class Training(State):
         term = Terminal()
         # Terminal object that prints special characters
 
-        print(term.hidden_cursor)
         print(term.home + term.clear + term.color_black())
         # Sets background color to black, clears, hides cursor
 
