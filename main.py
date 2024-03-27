@@ -9,7 +9,7 @@ if __name__ == '__main__':
     program = Program()
     program.state.visualize()
 
-    with term.cbreak():
+    with term.cbreak(), term.hidden_cursor():
         # Makes terminal catch all keyboard keys without printing them
 
         while True:
