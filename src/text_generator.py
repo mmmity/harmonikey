@@ -1,10 +1,14 @@
 import abc
 import typing
 import random
-import collections
-import itertools
+from enum import Enum
 
 from src.exceptions import EndOfFile
+
+
+class TextgenType(Enum):
+    RANDOM = 0
+    FILE = 1
 
 
 class TextGenerator(abc.ABC):
