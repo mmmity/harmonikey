@@ -13,11 +13,11 @@ class TextOverseer:
     and Training to which is bound.
     '''
     def __init__(self, textgen: TextGenerator, training: Training):
-        self.textgen = textgen
-        self.training = training
-        self.current_word = self.textgen.current_word()
-        self.input = ''
-        self.error = ''
+        self.textgen: TextGenerator = textgen
+        self.training: Training = training
+        self.current_word: str = self.textgen.current_word()
+        self.input: str = ''
+        self.error: str = ''
 
     def __handle_backspace(self):
         '''
@@ -101,3 +101,5 @@ class TextOverseer:
                 self.__handle_die_errors(key)
             case Gamemode.FIX_ERRORS:
                 self.__handle_fix_errors(key)
+            case _:
+                raise ValueError("Unknown gamemode")

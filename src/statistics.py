@@ -14,13 +14,13 @@ class Statistics:
         '''
         Initialization for real-time statistics counting
         '''
-        self.word_count = 0
-        self.character_count = 0
-        self.error_count = 0
-        self.user = user
-        self.start_timer = time.perf_counter_ns()
-        self.text_tag = text_tag
-        self.mode = mode
+        self.word_count: int = 0
+        self.character_count: int = 0
+        self.error_count: int = 0
+        self.user: str = user
+        self.start_timer: int = time.perf_counter_ns()
+        self.text_tag: str = text_tag
+        self.mode: Gamemode = mode
 
     def add_word(self, word: str) -> None:
         '''

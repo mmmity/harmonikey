@@ -55,8 +55,8 @@ class RandomTextGenerator(TextGenerator):
         '''
         with open(filename, 'r') as file:
             self.vocab = file.read().split()
-        self.__poolsize = init_poolsize * 2 - 1
-        self.__pool = []
+        self.__poolsize: int = init_poolsize * 2 - 1
+        self.__pool: list = []
 
         for _ in range(init_poolsize):
             self.__pool.append(random.choice(self.vocab))
@@ -112,10 +112,10 @@ class FileTextGenerator(TextGenerator):
         Initializes text with text from file, split into words.
         '''
         with open(filename, 'r') as file:
-            self.text = file.read().split()
-        self.__index = 0
+            self.text: str = file.read().split()
+        self.__index: int = 0
 
-    def next_word(self):
+    def next_word(self) -> str:
         '''
         Returns word from text on position index.
         If index > len(text) raises EndOfFile.
@@ -128,7 +128,7 @@ class FileTextGenerator(TextGenerator):
 
         return out_word
 
-    def current_word(self):
+    def current_word(self) -> str:
         '''
         Returns word from text on position index.
         Raises EndOfFile if end of file is reached.
