@@ -89,7 +89,7 @@ class Training(State):
         if textgen_type == TextgenType.RANDOM:
             self.statistics = Statistics(
                 user='mmmity',
-                text_tag='RANDOM.' + train_filename, 
+                text_tag='RANDOM.' + train_filename,
                 mode=gamemode
             )
             textgen = RandomTextGenerator(train_filename + '.txt', 4)
@@ -103,7 +103,6 @@ class Training(State):
 
         from src.text_overseer import TextOverseer
         self.text_overseer = TextOverseer(textgen, self)
-
 
     def __early_finish(self):
         '''
@@ -163,8 +162,9 @@ class Training(State):
         '''
         If time is up, finish training.
         '''
-        if self.timeout != 0 and self.statistics.get_elapsed_s() > self.timeout:
-            self.__finish()
+        if self.timeout != 0:
+            if self.statistics.get_elapsed_s() > self.timeout:
+                self.__finish()
 
     def tick(self):
         '''

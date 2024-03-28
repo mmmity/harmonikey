@@ -20,7 +20,7 @@ class TestTextOverseer(TestCase):
 
     def clean_up(self):
         os.remove(self.filename + '.txt')
-    
+
     def setUp(self):
         self.create_text_file('Lorem ipsum')
 

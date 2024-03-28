@@ -50,7 +50,7 @@ class Statistics:
         '''
         elapsed = time.perf_counter_ns() - self.start_timer
         return elapsed / self.NANOSECONDS_IN_SECOND
-    
+
     def __str__(self):
         '''
         String representation of statistics is csv row with all saved data.

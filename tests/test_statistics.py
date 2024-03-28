@@ -64,11 +64,11 @@ class TestStatistics(unittest.TestCase):
         stats_2.save_to_file(filename)
 
         expected_1 = ['mmmity', 'test_text', 'Gamemode.NO_ERRORS',
-                        5, 26, 5 * self.NANOSECONDS_IN_SECOND, 0]
+                      5, 26, 5 * self.NANOSECONDS_IN_SECOND, 0]
         # 5 words, 26 characters, 5 seconds, 0 errors
 
         expected_2 = ['rom4ik', 'RANDOM.test_vocab', 'Gamemode.FIX_ERRORS',
-                        5, 26, 10 * self.NANOSECONDS_IN_SECOND, 3]
+                      5, 26, 10 * self.NANOSECONDS_IN_SECOND, 3]
         # 5 words, 26 characters, 10 seconds, 3 errors
 
         with open(filename, 'r') as stats_file:
@@ -80,7 +80,7 @@ class TestStatistics(unittest.TestCase):
         for i in range(7):
             if type(expected_1[i]) is float:
                 self.assertAlmostEqual(expected_1[i], float(real_1[i]),
-                                        delta=0.005 * self.NANOSECONDS_IN_SECOND)
+                                       delta=5e-3 * self.NANOSECONDS_IN_SECOND)
             elif type(expected_1[i]) is int:
                 self.assertEqual(expected_1[i], int(real_1[i]))
             else:
@@ -88,7 +88,7 @@ class TestStatistics(unittest.TestCase):
 
             if type(expected_2[i]) is float:
                 self.assertAlmostEqual(expected_2[i], float(real_2[i]),
-                                        delta=0.005 * self.NANOSECONDS_IN_SECOND)
+                                       delta=5e-3 * self.NANOSECONDS_IN_SECOND)
             elif type(expected_2[i]) is int:
                 self.assertEqual(expected_2[i], int(real_2[i]))
             else:
@@ -125,7 +125,7 @@ class TestFileStatistics(unittest.TestCase):
     def clean_up(self):
         os.remove(self.file1_name)
         os.remove(self.file2_name)
-    
+
     def setUp(self):
         self.create_files()
 
@@ -154,7 +154,6 @@ class TestFileStatistics(unittest.TestCase):
         self.assertEqual(len(fs.by_user['rom4ik']), 2)
         self.assertEqual(len(fs.by_text_tag['good_text']), 2)
         self.assertEqual(len(fs.by_text_tag['test_text']), 3)
-            
 
     def test_user_best_stats(self):
         fs = FileStatistics()
@@ -167,23 +166,27 @@ class TestFileStatistics(unittest.TestCase):
 
         self.assertDictEqual(leha_best, {})
         self.assertCountEqual(mmmity_best.keys(),
-                                ['good_text', 'test_text'])
+                              ['good_text', 'test_text'])
         self.assertCountEqual(rom4ik_best.keys(),
-                                ['good_text', 'test_text'])
+                              ['good_text', 'test_text'])
         self.assertAlmostEqual(mmmity_best['test_text'].time,
-                                1 * self.NANOSECONDS_IN_SECOND, delta=0.005 * self.NANOSECONDS_IN_SECOND)
+                               1 * self.NANOSECONDS_IN_SECOND,
+                               delta=5e-3 * self.NANOSECONDS_IN_SECOND)
         # mmmity's best time on test_text should be approx. 1 second
 
         self.assertAlmostEqual(mmmity_best['good_text'].time,
-                                2 * self.NANOSECONDS_IN_SECOND, delta=0.005 * self.NANOSECONDS_IN_SECOND)
+                               2 * self.NANOSECONDS_IN_SECOND,
+                               delta=5e-3 * self.NANOSECONDS_IN_SECOND)
         # mmmity's best time on good_text should be approx. 2 seconds
 
         self.assertAlmostEqual(rom4ik_best['test_text'].time,
-                                3 * self.NANOSECONDS_IN_SECOND, delta=0.005 * self.NANOSECONDS_IN_SECOND)
+                               3 * self.NANOSECONDS_IN_SECOND,
+                               delta=5e-3 * self.NANOSECONDS_IN_SECOND)
         # rom4ik's best time on test_text should be approx. 3 seconds
 
         self.assertAlmostEqual(rom4ik_best['good_text'].time,
-                                3 * self.NANOSECONDS_IN_SECOND, delta=0.005 * self.NANOSECONDS_IN_SECOND)
+                               3 * self.NANOSECONDS_IN_SECOND,
+                               delta=5e-3 * self.NANOSECONDS_IN_SECOND)
         # rom4ik's best time on good_text should be approx. 3 seconds
 
     def test_text_best_stats(self):
@@ -208,9 +211,11 @@ class TestFileStatistics(unittest.TestCase):
         self.assertEqual(test_top5[2].user, 'rom4ik')
 
         self.assertAlmostEqual(test_top1[0].time,
-                                1 * self.NANOSECONDS_IN_SECOND, delta=0.005 * self.NANOSECONDS_IN_SECOND)
+                               1 * self.NANOSECONDS_IN_SECOND,
+                               delta=5e-3 * self.NANOSECONDS_IN_SECOND)
         # Top1's time on test_text should be approx. 1 second
 
         self.assertAlmostEqual(good_top1[0].time,
-                                2 * self.NANOSECONDS_IN_SECOND, delta=0.005 * self.NANOSECONDS_IN_SECOND)
+                               2 * self.NANOSECONDS_IN_SECOND,
+                               delta=5e-3 * self.NANOSECONDS_IN_SECOND)
         # Top1's time on good_text should be approx. 2 seconds
