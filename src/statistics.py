@@ -1,12 +1,16 @@
 import time
 from typing import NamedTuple, List, Dict
+from src.gamemodes import Gamemode
 
 
 class Statistics:
     '''
     Class for counting, saving and loading statistics in real time
     '''
-    def __init__(self, user: str, text_tag: str, mode: str):
+    NANOSECONDS_IN_MINUTE = 60.0 * 1000000000.0
+    NANOSECONDS_IN_SECOND = 1000000000.0
+
+    def __init__(self, user: str, text_tag: str, mode: Gamemode):
         '''
         Initialization for real-time statistics counting
         '''
@@ -18,7 +22,7 @@ class Statistics:
         self.text_tag = text_tag
         self.mode = mode
 
-    def add_word(self, word: str):
+    def add_word(self, word: str) -> None:
         '''
         Adding word, which was successfully typed by user
         '''
@@ -30,14 +34,14 @@ class Statistics:
         Return wpm (words per minute) for current Statistics
         '''
         elapsed = time.perf_counter_ns() - self.start_timer
-        return 60.0 * 1000000000.0 * self.word_count / elapsed
+        return self.NANOSECONDS_IN_MINUTE * self.word_count / elapsed
 
     def get_cpm(self) -> float:
         '''
         Return cpm (characters per minute) for current Statistics
         '''
         elapsed = time.perf_counter_ns() - self.start_timer
-        return 60.0 * 1000000000.0 * self.character_count / elapsed
+        return self.NANOSECONDS_IN_MINUTE * self.character_count / elapsed
 
     def get_elapsed_s(self) -> float:
         '''
@@ -45,10 +49,13 @@ class Statistics:
         in seconds
         '''
         elapsed = time.perf_counter_ns() - self.start_timer
-        return elapsed / 1000000000.0
-
-    def save_to_file(self, path: str):
-        to_write = ';'.join([
+        return elapsed / self.NANOSECONDS_IN_SECOND
+    
+    def __str__(self):
+        '''
+        String representation of statistics is csv row with all saved data.
+        '''
+        return ';'.join([
             str(self.user),
             str(self.text_tag),
             str(self.mode),
@@ -57,10 +64,13 @@ class Statistics:
             str(time.perf_counter_ns() - self.start_timer),
             str(self.error_count)
         ])
-        to_write += '\n'
 
+    def save_to_file(self, path: str) -> None:
+        '''
+        Appends stats to file.
+        '''
         with open(path, 'a') as stats_file:
-            stats_file.write(to_write)
+            stats_file.write(str(self) + '\n')
 
 
 class FileStatistics:
