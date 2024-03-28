@@ -28,10 +28,13 @@ class TestTextOverseer(TestCase):
         self.clean_up()
 
     def test_shifting(self):
-        training = Training(None,
-                            Gamemode.NO_ERRORS,
-                            self.filename,
-                            TextgenType.FILE)
+        training = Training(
+            program=None,
+            gamemode=Gamemode.NO_ERRORS,
+            train_filename=self.filename,
+            textgen_type=TextgenType.FILE,
+            timeout=0.0
+        )
         overseer = training.text_overseer
 
         self.assertEqual(overseer.current_word, 'Lorem')
@@ -50,10 +53,13 @@ class TestTextOverseer(TestCase):
         self.assertEqual(training.statistics.word_count, 2)
 
     def test_no_errors(self):
-        training = Training(None,
-                            Gamemode.NO_ERRORS,
-                            self.filename,
-                            TextgenType.FILE)
+        training = Training(
+            program=None,
+            gamemode=Gamemode.NO_ERRORS,
+            train_filename=self.filename,
+            textgen_type=TextgenType.FILE,
+            timeout=0.0
+        )
         overseer = training.text_overseer
 
         for c in 'Lor':
