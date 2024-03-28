@@ -20,14 +20,12 @@ class TextGenerator(abc.ABC):
         '''
         Returns next word from generator.
         '''
-        pass
 
     @abc.abstractmethod
     def current_word(self) -> str:
         '''
         Returns current word from generator.
         '''
-        pass
 
     @abc.abstractmethod
     def words_before(self, num_words: int) -> str:
@@ -35,7 +33,6 @@ class TextGenerator(abc.ABC):
         Returns num_words before the current word
         in generator for proper visualization.
         '''
-        pass
 
     @abc.abstractmethod
     def words_after(self, num_words: int) -> str:
@@ -43,7 +40,6 @@ class TextGenerator(abc.ABC):
         Returns num_words after the current word
         in generator for proper visualization.
         '''
-        pass
 
 
 class RandomTextGenerator(TextGenerator):

@@ -24,14 +24,12 @@ class State(ABC):
         '''
         Visualization of current state.
         '''
-        pass
 
     @abstractmethod
     def handle_key(self, key: Keystroke):
         '''
         Handles pressed key.
         '''
-        pass
 
     def switch(self, state):
         '''
@@ -53,7 +51,6 @@ class Exit(State):
         '''
         term = Terminal()
         print(term.home + term.clear)
-        pass
 
     def handle_key(self, key: Keystroke):
         pass
