@@ -21,5 +21,5 @@ if __name__ == '__main__':
 
             program.state.visualize()
 
-            if type(program.state) is Exit:
+            if isinstance(program.state, Exit):
                 break
