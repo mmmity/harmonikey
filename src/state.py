@@ -6,6 +6,7 @@ from blessed import Terminal
 from src.text_generator import *
 from src.program import Program
 from src.exceptions import *
+from threading import Timer
 
 
 class State(ABC):
@@ -29,6 +30,12 @@ class State(ABC):
     def handle_key(self, key: Keystroke):
         '''
         Handles pressed key.
+        '''
+
+    @abstractmethod
+    def tick(self):
+        '''
+        Does something that needs to be done every program tick.
         '''
 
     def switch(self, state):
@@ -55,6 +62,9 @@ class Exit(State):
     def handle_key(self, key: Keystroke):
         pass
 
+    def tick(self):
+        pass
+
 
 class Training(State):
     '''
@@ -66,7 +76,7 @@ class Training(State):
     '''
     def __init__(self, program: Program,
                  gamemode: Gamemode, train_filename: str,
-                 textgen_type: TextgenType):
+                 textgen_type: TextgenType, timeout: float):
         '''
         Initializes stats, overseer.
         '''
@@ -74,7 +84,8 @@ class Training(State):
         self.__updated_since = False
         # Variable to redraw everything when necessary, not every tick
 
-        self.gamemode = gamemode
+        self.timeout: float = timeout
+        self.gamemode: Gamemode = gamemode
         if textgen_type == TextgenType.RANDOM:
             self.statistics = Statistics(
                 user='mmmity',
@@ -89,8 +100,10 @@ class Training(State):
                 mode=gamemode
             )
             textgen = FileTextGenerator(train_filename + '.txt')
-        import src.text_overseer
-        self.text_overseer = src.text_overseer.TextOverseer(textgen, self)
+
+        from src.text_overseer import TextOverseer
+        self.text_overseer = TextOverseer(textgen, self)
+
 
     def __early_finish(self):
         '''
@@ -141,7 +154,23 @@ class Training(State):
 
         elapsed_str = format(self.statistics.get_elapsed_s(), '.2f')
 
+        if self.timeout != 0.0:
+            elapsed_str += ' / ' + format(self.timeout, '.2f')
+
         print(term.white(elapsed_str) + ' s')
+
+    def __check_time(self):
+        '''
+        If time is up, finish training.
+        '''
+        if self.timeout != 0 and self.statistics.get_elapsed_s() > self.timeout:
+            self.__finish()
+
+    def tick(self):
+        '''
+        Only asks timer if time is up.
+        '''
+        self.__check_time()
 
     def __visualize_words(self):
         '''

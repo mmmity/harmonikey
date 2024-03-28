@@ -1,6 +1,10 @@
 from src.program import Program
 from blessed import Terminal
 from src.state import Exit
+from threading import Timer
+
+def func():
+    raise TypeError("ANIME")
 
 if __name__ == '__main__':
 
@@ -8,6 +12,7 @@ if __name__ == '__main__':
 
     program = Program()
     program.state.visualize()
+
     with term.cbreak(), term.hidden_cursor():
         # Makes terminal catch all keyboard keys without printing them
 
@@ -19,6 +24,7 @@ if __name__ == '__main__':
             if key != '':
                 program.state.handle_key(key)
 
+            program.state.tick()
             program.state.visualize()
 
             if isinstance(program.state, Exit):

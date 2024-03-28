@@ -11,5 +11,6 @@ class Program:
             program=self,
             gamemode=Gamemode.NO_ERRORS,
             train_filename='assets/texts/sample_text',
-            textgen_type=TextgenType.FILE
+            textgen_type=TextgenType.FILE,
+            timeout=15.0
         )
