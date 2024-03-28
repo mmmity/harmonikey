@@ -20,54 +20,49 @@ class TestTextOverseer(TestCase):
 
     def clean_up(self):
         os.remove(self.filename + '.txt')
+    
+    def setUp(self):
+        self.create_text_file('Lorem ipsum')
+
+    def tearDown(self):
+        self.clean_up()
 
     def test_shifting(self):
-        self.create_text_file('Lorem ipsum')
         training = Training(None,
                             Gamemode.NO_ERRORS,
                             self.filename,
                             TextgenType.FILE)
         overseer = training.text_overseer
-        try:
-            self.assertEqual(overseer.current_word, 'Lorem')
-            for c in 'Lorem':
-                overseer.handle_char(Keystroke(c))
 
-            self.assertEqual(overseer.input, '')
-            self.assertEqual(overseer.current_word, ' ipsum')
-            self.assertEqual(training.statistics.word_count, 1)
+        self.assertEqual(overseer.current_word, 'Lorem')
+        for c in 'Lorem':
+            overseer.handle_char(Keystroke(c))
 
-            for c in ' ipsu':
-                overseer.handle_char(Keystroke(c))
+        self.assertEqual(overseer.input, '')
+        self.assertEqual(overseer.current_word, ' ipsum')
+        self.assertEqual(training.statistics.word_count, 1)
 
-            with self.assertRaises(EndOfFile):
-                overseer.handle_char(Keystroke('m'))
-            self.assertEqual(training.statistics.word_count, 2)
-        except Exception:
-            raise
-        finally:
-            self.clean_up()
+        for c in ' ipsu':
+            overseer.handle_char(Keystroke(c))
+
+        with self.assertRaises(EndOfFile):
+            overseer.handle_char(Keystroke('m'))
+        self.assertEqual(training.statistics.word_count, 2)
 
     def test_no_errors(self):
-        self.create_text_file('Lorem ipsum')
         training = Training(None,
                             Gamemode.NO_ERRORS,
                             self.filename,
                             TextgenType.FILE)
         overseer = training.text_overseer
 
-        try:
-            for c in 'Lor':
-                overseer.handle_char(Keystroke(c))
-            self.assertEqual(overseer.input, 'Lor')
-            overseer.handle_char(Keystroke('E'))
-            overseer.handle_char(Keystroke('\x08'))
-            self.assertEqual(overseer.input, 'Lor')
-            self.assertEqual(overseer.error, '')
-            overseer.handle_char(Keystroke('e'))
-            self.assertEqual(overseer.input, 'Lore')
-            self.assertEqual(overseer.error, '')
-        except Exception:
-            raise
-        finally:
-            self.clean_up()
+        for c in 'Lor':
+            overseer.handle_char(Keystroke(c))
+        self.assertEqual(overseer.input, 'Lor')
+        overseer.handle_char(Keystroke('E'))
+        overseer.handle_char(Keystroke('\x08'))
+        self.assertEqual(overseer.input, 'Lor')
+        self.assertEqual(overseer.error, '')
+        overseer.handle_char(Keystroke('e'))
+        self.assertEqual(overseer.input, 'Lore')
+        self.assertEqual(overseer.error, '')
