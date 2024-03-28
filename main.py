@@ -1,10 +1,6 @@
 from src.program import Program
 from blessed import Terminal
 from src.state import Exit
-from threading import Timer
-
-def func():
-    raise TypeError("ANIME")
 
 if __name__ == '__main__':
 
