@@ -1,6 +1,7 @@
-from tests.test_text_generator import *
-from tests.test_statistics import *
-from tests.test_text_overseer import *
+from tests.test_text_generator import TestRandomTextGenerator, \
+                                      TestFileTextGenerator
+from tests.test_statistics import TestStatistics, TestFileStatistics
+from tests.test_text_overseer import TestTextOverseer
 import unittest
 
 import sys
