@@ -48,13 +48,15 @@ class Statistics:
         return elapsed / 1000000000.0
 
     def save_to_file(self, path: str):
-        to_write = ';'.join([str(self.user),
-                             str(self.text_tag),
-                             str(self.mode),
-                             str(self.word_count),
-                             str(self.character_count),
-                             str(time.perf_counter_ns() - self.start_timer),
-                             str(self.error_count)])
+        to_write = ';'.join([
+            str(self.user),
+            str(self.text_tag),
+            str(self.mode),
+            str(self.word_count),
+            str(self.character_count),
+            str(time.perf_counter_ns() - self.start_timer),
+            str(self.error_count)
+        ])
         to_write += '\n'
 
         with open(path, 'a') as stats_file:
@@ -102,9 +104,15 @@ class FileStatistics:
             for line in stats_file.readlines():
                 splitted = line.rstrip().split(';')
                 try:
-                    entry = self.Entry(splitted[0], splitted[1], splitted[2],
-                                       int(splitted[3]), int(splitted[4]),
-                                       int(splitted[5]), int(splitted[6]))
+                    entry = self.Entry(
+                        user=splitted[0],
+                        text_tag=splitted[1],
+                        mode=splitted[2],
+                        word_count=int(splitted[3]),
+                        character_count=int(splitted[4]),
+                        time=int(splitted[5]),
+                        error_count=int(splitted[6])
+                    )
                 except (IndexError, TypeError):
                     raise TypeError("Wrong file format")
                 new_entries.append(entry)
