@@ -8,7 +8,7 @@ from src.text_generator import FileTextGenerator, \
 from src.program import Program
 from src.exceptions import *
 from threading import Timer
-from src.widgets import Button, TextInput
+from src.widgets import Widget, Button, TextInput
 from typing import List
 
 
@@ -115,7 +115,7 @@ class Training(State):
         Does not save stats, just exits
         '''
         self.statistics.freeze()
-        self.switch(Exit(self.program))
+        self.switch(AfterTraining(self.program, self.statistics, True))
 
     def __finish(self):
         '''
@@ -125,7 +125,7 @@ class Training(State):
         '''
         self.statistics.freeze()
         self.statistics.save_to_file('stats.csv')
-        self.switch(Exit(self.program))
+        self.switch(AfterTraining(self.program, self.statistics, False))
 
     def handle_key(self, key: Keystroke):
         '''
@@ -244,9 +244,16 @@ class AfterTraining(State):
     ended prematurely (due to error if mode was DIE_ERRORS).
     '''
     def __main_menu(self):
+        '''
+        Is called when 'Main menu' button is pressed.
+        '''
         self.switch(Exit(self.program))
 
     def __restart(self):
+        '''
+        Is called when 'Restart' button is pressed.
+        Restarts training with same parameters.
+        '''
         textgen_type = TextgenType.FILE
         filename = self.stats.text_tag
         if self.stats.text_tag.startswith('RANDOM'):
@@ -270,7 +277,7 @@ class AfterTraining(State):
         super().__init__(program)
         self.stats: Statistics = stats
         self.is_early: bool = is_early
-        self.widgets: List[Button] = [
+        self.widgets: List[Widget] = [
             Button(self.__restart, 'Restart'),
             Button(self.__main_menu, 'Main menu')
         ]
@@ -284,21 +291,42 @@ class AfterTraining(State):
             term = Terminal()
             text_to_print = ''
             y_offset = 3
+
             if self.is_early:
                 text_to_print += term.center(term.bold(term.red('GAME OVER'))) + '\n'
             else:
                 text_to_print += term.center(term.bold(term.green('TRAINING DONE'))) + '\n'
             
+            text_to_print += term.center('On text ' + term.bold(self.stats.text_tag) + ' for user ' + term.bold(self.stats.user) + ' with mode ' + term.bold(str(self.stats.mode)))
             text_to_print += term.center(term.bold(format(self.stats.get_wpm(), '.2f')) + ' wpm, ' + term.bold(format(self.stats.get_cpm(), '.2f')) + ' cpm') + '\n'
             text_to_print += term.center(term.bold(str(self.stats.word_count)) + ' words, ' + term.bold(str(self.stats.character_count)) + ' characters') + '\n'
-            # text_to_print += term.center(term.bold(str(self.stats.)))
+            text_to_print += term.center(term.bold(format(self.stats.get_elapsed_s(), '.2f')) + ' seconds')
+
+            widgets_to_print = ''
+            if self.active_widget == 0:
+                widgets_to_print += term.ljust(self.widgets[0].visualize_str(True)) + term.rjust(self.widgets[1].visualize_str(False))
+            else:
+                widgets_to_print += term.ljust(self.widgets[0].visualize_str(False)) + term.rjust(self.widgets[1].visualize_str(True))
+            
+
             print(term.clear + term.move_y(term.height // 2 - y_offset))
-            # text_to_print = term.center('anime') + '\n' + term.center('anime')
-            # print(term.move_y(2))
-            print(term.center(text_to_print))
+            print(text_to_print)
+            print(term.move_y(term.height - 2))
+            print(widgets_to_print)
+
 
     def handle_key(self, key: Keystroke):
-        pass
+        match key.name:
+            case 'KEY_LEFT':
+                self.active_widget -= 1
+                self.active_widget = (self.active_widget + len(self.widgets)) % len(self.widgets)
+            case 'KEY_RIGHT':
+                self.active_widget += 1
+                self.active_widget %= len(self.widgets)
+            case _:
+                self.widgets[self.active_widget].handle_key(key)
+
+        self.__updated_since = False
 
     def tick(self):
         pass
