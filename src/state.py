@@ -78,7 +78,7 @@ class Training(State):
         text_overseer - TextOverseer for controlling typing
     '''
     def __init__(self, program: Program,
-                 gamemode: Gamemode, train_filename: str,
+                 gamemode: Gamemode, train_filename: str, user: str,
                  textgen_type: TextgenType, timeout: float):
         '''
         Initializes stats, overseer.
@@ -89,22 +89,23 @@ class Training(State):
 
         self.timeout: float = timeout
         self.gamemode: Gamemode = gamemode
+        self.user: str = user
         if textgen_type == TextgenType.RANDOM:
             self.statistics = Statistics(
-                user='mmmity',
+                user=self.user,
                 text_tag='RANDOM.' + train_filename,
                 mode=gamemode,
                 timeout=self.timeout,
             )
-            textgen = RandomTextGenerator(train_filename + '.txt', 4)
+            textgen = RandomTextGenerator(train_filename, 4)
         else:
             self.statistics = Statistics(
-                user='mmmity',
+                user=self.user,
                 text_tag=train_filename,
                 mode=gamemode,
                 timeout=self.timeout
             )
-            textgen = FileTextGenerator(train_filename + '.txt')
+            textgen = FileTextGenerator(train_filename)
 
         from src.text_overseer import TextOverseer
         self.text_overseer = TextOverseer(textgen, self)
@@ -264,6 +265,7 @@ class AfterTraining(State):
         new_training = Training(
             program=self.program,
             gamemode=self.stats.mode,
+            user=self.stats.user,
             train_filename=filename,
             textgen_type=textgen_type,
             timeout=self.stats.timeout
@@ -370,15 +372,25 @@ class BeforeTraining(State):
     Widgets are composed in grid, can be navigated left-right and top-bottom.
     '''
     MAX_SWITCH_WIDTH = 25
+    # Is used for rjusting switches in visualize()
 
     def __begin_training(self):
         '''
         Switches program to new training with inputted parameters.
         '''
+        match self.textgentype_switch.get_current_option():
+            case TextgenType.FILE:
+                filename = 'assets/texts/' + self.text_filepath.input
+            case TextgenType.RANDOM:
+                filename = 'assets/vocabs/' + self.text_filepath.input
+            case _:
+                raise TypeError("Unknown TextgenType")
+
         training = Training(
             program=self.program,
             gamemode=self.gamemode_switch.get_current_option(),
-            train_filename='assets/' + self.text_filepath.input,
+            user=self.player_name.input,
+            train_filename=filename,
             textgen_type=self.textgentype_switch.get_current_option(),
             timeout=0.0,
         )
@@ -399,7 +411,7 @@ class BeforeTraining(State):
 
         player_name_title = 'Input name:'
         self.player_name = TextInput(50, player_name_title)
-        text_filepath_title = 'Input text file without extension:assets/'
+        text_filepath_title = 'Input text file:assets/texts/'
         self.text_filepath = TextInput(50, text_filepath_title)
         gamemode_switch_title = 'Choose gamemode(z/x):'
         self.gamemode_switch = Switch(Gamemode, gamemode_switch_title)
@@ -407,7 +419,7 @@ class BeforeTraining(State):
         self.textgentype_switch = Switch(TextgenType, textgentype_switch_title)
         begin_button_title = 'Begin'
         self.begin_button = Button(self.__begin_training, begin_button_title)
-        return_button_title = 'Maine menu'
+        return_button_title = 'Main menu'
         self.return_button = Button(self.__main_menu, return_button_title)
 
         self.grid: List[List[Widget]] = [
@@ -421,6 +433,9 @@ class BeforeTraining(State):
         self.__updated_since: bool = False
 
     def active_widget(self) -> Tuple[int, int]:
+        '''
+        Returns active widget coordinates in grid.
+        '''
         return (self.active_widget_x, self.active_widget_y)
 
     def visualize(self):
@@ -496,4 +511,8 @@ class BeforeTraining(State):
         self.__updated_since = False
 
     def tick(self):
-        pass
+        match self.textgentype_switch.get_current_option():
+            case TextgenType.FILE:
+                self.text_filepath.title = 'Input text file:assets/texts/'
+            case TextgenType.RANDOM:
+                self.text_filepath.title = 'Input text file:assets/vocabs/'
