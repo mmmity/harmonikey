@@ -1,7 +1,7 @@
 import unittest
 from blessed import Terminal
 from blessed.keyboard import Keystroke
-from src.widgets import Button, TextInput, Switch
+from src.widgets import Button, TextInput, NumberInput, Switch
 from enum import Enum
 
 
@@ -59,6 +59,24 @@ class TestTextInput(unittest.TestCase):
         text_input.handle_key(Keystroke('c'))
         text_input.handle_key(Keystroke('d'))
         self.assertEqual(text_input.input, 'ab')
+
+
+class TestNumberInput(unittest.TestCase):
+
+    def test_handle(self):
+        number_input = NumberInput(50)
+
+        number_input.handle_key(Keystroke('1'))
+        number_input.handle_key(Keystroke('2'))
+        self.assertEqual(number_input.input, '12')
+        self.assertEqual(number_input.int_input(), 12)
+
+        number_input.handle_key(Keystroke('a'))
+        self.assertEqual(number_input.input, '12')
+        self.assertEqual(number_input.int_input(), 12)
+
+        number_input.handle_key(Keystroke(name='KEY_BACKSPACE'))
+        self.assertEqual(number_input.input, '1')
 
 
 class TestSwitch(unittest.TestCase):
