@@ -3,10 +3,12 @@ from src.gamemodes import Gamemode
 from src.statistics import Statistics
 from blessed.keyboard import Keystroke
 from blessed import Terminal
-from src.text_generator import *
+from src.text_generator import FileTextGenerator, \
+                               RandomTextGenerator, TextgenType
 from src.program import Program
 from src.exceptions import *
 from threading import Timer
+from src.widgets import Button, TextInput
 
 
 class State(ABC):
@@ -97,7 +99,8 @@ class Training(State):
             self.statistics = Statistics(
                 user='mmmity',
                 text_tag=train_filename,
-                mode=gamemode
+                mode=gamemode,
+                timeout=self.timeout
             )
             textgen = FileTextGenerator(train_filename + '.txt')
 

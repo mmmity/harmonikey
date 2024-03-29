@@ -10,7 +10,8 @@ class Statistics:
     NANOSECONDS_IN_MINUTE = 60.0 * 1000000000.0
     NANOSECONDS_IN_SECOND = 1000000000.0
 
-    def __init__(self, user: str, text_tag: str, mode: Gamemode):
+    def __init__(self, user: str, text_tag: str,
+                 mode: Gamemode, timeout: float):
         '''
         Initialization for real-time statistics counting
         '''
@@ -21,6 +22,7 @@ class Statistics:
         self.start_timer: int = time.perf_counter_ns()
         self.text_tag: str = text_tag
         self.mode: Gamemode = mode
+        self.timeout: float = timeout
 
     def add_word(self, word: str) -> None:
         '''
@@ -62,7 +64,8 @@ class Statistics:
             str(self.word_count),
             str(self.character_count),
             str(time.perf_counter_ns() - self.start_timer),
-            str(self.error_count)
+            str(self.timeout),
+            str(self.error_count),
         ])
 
     def save_to_file(self, path: str) -> None:
@@ -94,6 +97,7 @@ class FileStatistics:
         word_count: int
         character_count: int
         time: int
+        timeout: float
         error_count: int
 
     def __init__(self):
@@ -121,7 +125,8 @@ class FileStatistics:
                         word_count=int(splitted[3]),
                         character_count=int(splitted[4]),
                         time=int(splitted[5]),
-                        error_count=int(splitted[6])
+                        timeout=float(splitted[6]),
+                        error_count=int(splitted[7])
                     )
                 except (IndexError, TypeError):
                     raise TypeError("Wrong file format")

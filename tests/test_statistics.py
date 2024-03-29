@@ -10,7 +10,7 @@ class TestStatistics(unittest.TestCase):
     NANOSECONDS_IN_SECOND = 1000000000.0
 
     def test_add_word(self):
-        stats = Statistics('mmmity', 'test_text', Gamemode.NO_ERRORS)
+        stats = Statistics('mmmity', 'test_text', Gamemode.NO_ERRORS, 0.0)
         wordlist = ['Lorem', ' ipsum', ' dolor', ' sit', ' amet']
 
         self.assertEqual(stats.word_count, 0)
@@ -23,7 +23,7 @@ class TestStatistics(unittest.TestCase):
             self.assertEqual(stats.character_count, sum(wordlen[:i + 1]))
 
     def test_wpm(self):
-        stats = Statistics('mmmity', 'test_text', Gamemode.NO_ERRORS)
+        stats = Statistics('mmmity', 'test_text', Gamemode.NO_ERRORS, 0.0)
         wordlist = ['Lorem', ' ipsum', ' dolor', ' sit', ' amet']
         for word in wordlist:
             stats.add_word(word)
@@ -32,7 +32,7 @@ class TestStatistics(unittest.TestCase):
         self.assertAlmostEqual(stats.get_wpm(), 60, delta=0.05)
 
     def test_cpm(self):
-        stats = Statistics('mmmity', 'test_text', Gamemode.NO_ERRORS)
+        stats = Statistics('mmmity', 'test_text', Gamemode.NO_ERRORS, 0.0)
         wordlist = ['Lorem', ' ipsum', ' dolor', ' sit', ' amet']
         for word in wordlist:
             stats.add_word(word)
@@ -41,7 +41,7 @@ class TestStatistics(unittest.TestCase):
         self.assertAlmostEqual(stats.get_cpm(), 312, delta=0.05)
 
     def test_elapsed(self):
-        stats = Statistics('mmmity', 'test_text', Gamemode.NO_ERRORS)
+        stats = Statistics('mmmity', 'test_text', Gamemode.NO_ERRORS, 0.0)
         time.sleep(1.0)
         self.assertAlmostEqual(stats.get_elapsed_s(), 1.0, delta=0.05)
 
@@ -49,9 +49,9 @@ class TestStatistics(unittest.TestCase):
         # Generating random filename so no collisions occur
         filename = random.randbytes(8).hex() + 'stats.csv'
         stats_1 = Statistics('mmmity', 'test_text',
-                             Gamemode.NO_ERRORS)
+                             Gamemode.NO_ERRORS, 0.0)
         stats_2 = Statistics('rom4ik', 'RANDOM.test_vocab',
-                             Gamemode.FIX_ERRORS)
+                             Gamemode.FIX_ERRORS, 0.0)
         wordlist = ['Lorem', ' ipsum', ' dolor', ' sit', ' amet']
 
         for word in wordlist:
@@ -64,11 +64,11 @@ class TestStatistics(unittest.TestCase):
         stats_2.save_to_file(filename)
 
         expected_1 = ['mmmity', 'test_text', 'Gamemode.NO_ERRORS',
-                      5, 26, 5 * self.NANOSECONDS_IN_SECOND, 0]
+                      5, 26, 5 * self.NANOSECONDS_IN_SECOND, 0.0, 0]
         # 5 words, 26 characters, 5 seconds, 0 errors
 
         expected_2 = ['rom4ik', 'RANDOM.test_vocab', 'Gamemode.FIX_ERRORS',
-                      5, 26, 10 * self.NANOSECONDS_IN_SECOND, 3]
+                      5, 26, 10 * self.NANOSECONDS_IN_SECOND, 0.0, 3]
         # 5 words, 26 characters, 10 seconds, 3 errors
 
         with open(filename, 'r') as stats_file:
@@ -102,11 +102,11 @@ class TestFileStatistics(unittest.TestCase):
         self.file1_name = random.randbytes(8).hex() + 'stats.csv'
         self.file2_name = random.randbytes(8).hex() + 'stats.csv'
 
-        stats = [Statistics('mmmity', 'test_text', Gamemode.NO_ERRORS),
-                 Statistics('mmmity', 'test_text', Gamemode.FIX_ERRORS),
-                 Statistics('mmmity', 'good_text', Gamemode.FIX_ERRORS),
-                 Statistics('rom4ik', 'test_text', Gamemode.NO_ERRORS),
-                 Statistics('rom4ik', 'good_text', Gamemode.FIX_ERRORS)]
+        stats = [Statistics('mmmity', 'test_text', Gamemode.NO_ERRORS, 0.0),
+                 Statistics('mmmity', 'test_text', Gamemode.FIX_ERRORS, 0.0),
+                 Statistics('mmmity', 'good_text', Gamemode.FIX_ERRORS, 0.0),
+                 Statistics('rom4ik', 'test_text', Gamemode.NO_ERRORS, 0.0),
+                 Statistics('rom4ik', 'good_text', Gamemode.FIX_ERRORS, 0.0)]
 
         wordlist = ['Lorem', 'ipsum', 'dolor', 'sit', 'amet']
         for s in stats:
