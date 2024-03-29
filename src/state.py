@@ -114,6 +114,7 @@ class Training(State):
         due to making an error when gamemode is NO_ERRORS.
         Does not save stats, just exits
         '''
+        self.statistics.freeze()
         self.switch(Exit())
 
     def __finish(self):
@@ -122,6 +123,7 @@ class Training(State):
         due to finishing text file or timer expiring.
         Saves stats to stats file.
         '''
+        self.statistics.freeze()
         self.statistics.save_to_file('stats.csv')
         self.switch(Exit(self.program))
 

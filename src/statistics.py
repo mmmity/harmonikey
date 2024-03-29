@@ -23,6 +23,24 @@ class Statistics:
         self.text_tag: str = text_tag
         self.mode: Gamemode = mode
         self.timeout: float = timeout
+        self.frozen: bool = False
+        self.frozen_timer: int = 0
+
+    def get_current_time(self) -> int:
+        '''
+        Returns time elapsed since the beginning of Training
+        If training is over but self is still used, it should return time of Training end
+        '''
+        if self.frozen:
+            return self.frozen_timer
+        return time.perf_counter_ns()
+
+    def freeze(self):
+        '''
+        Freezes timer. Is called when Training is ended.
+        '''
+        self.frozen_timer = self.get_current_time()
+        self.frozen = True
 
     def add_word(self, word: str) -> None:
         '''
@@ -35,14 +53,14 @@ class Statistics:
         '''
         Return wpm (words per minute) for current Statistics
         '''
-        elapsed = time.perf_counter_ns() - self.start_timer
+        elapsed = self.get_current_time() - self.start_timer
         return self.NANOSECONDS_IN_MINUTE * self.word_count / elapsed
 
     def get_cpm(self) -> float:
         '''
         Return cpm (characters per minute) for current Statistics
         '''
-        elapsed = time.perf_counter_ns() - self.start_timer
+        elapsed = self.get_current_time() - self.start_timer
         return self.NANOSECONDS_IN_MINUTE * self.character_count / elapsed
 
     def get_elapsed_s(self) -> float:
@@ -50,7 +68,7 @@ class Statistics:
         Returns time elapsed since initialization
         in seconds
         '''
-        elapsed = time.perf_counter_ns() - self.start_timer
+        elapsed = self.get_current_time() - self.start_timer
         return elapsed / self.NANOSECONDS_IN_SECOND
 
     def __str__(self):
@@ -63,7 +81,7 @@ class Statistics:
             str(self.mode),
             str(self.word_count),
             str(self.character_count),
-            str(time.perf_counter_ns() - self.start_timer),
+            str(self.get_current_time() - self.start_timer),
             str(self.timeout),
             str(self.error_count),
         ])
