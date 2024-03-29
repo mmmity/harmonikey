@@ -1,7 +1,8 @@
 import unittest
 from blessed import Terminal
 from blessed.keyboard import Keystroke
-from src.widgets import Button, TextInput
+from src.widgets import Button, TextInput, Switch
+from enum import Enum
 
 
 class TestButton(unittest.TestCase):
@@ -58,3 +59,33 @@ class TestTextInput(unittest.TestCase):
         text_input.handle_key(Keystroke('c'))
         text_input.handle_key(Keystroke('d'))
         self.assertEqual(text_input.input, 'ab')
+
+
+class TestSwitch(unittest.TestCase):
+
+    def setUp(self):
+        self.enum = Enum('Test', ['opt1', 'opt2', 'opt3'])
+        self.switch = Switch(self.enum)
+
+    def test_visualize(self):
+        term = Terminal()
+        self.assertEqual(self.switch.visualize_str(False), 'Test.opt1')
+
+        active_expected = term.on_deepskyblue3('Test.opt1')
+        self.assertEqual(self.switch.visualize_str(True), active_expected)
+
+    def test_handle_key(self):
+        self.assertEqual(self.switch.visualize_str(False), 'Test.opt1')
+        self.switch.handle_key(Keystroke('x'))
+        self.assertEqual(self.switch.visualize_str(False), 'Test.opt2')
+        self.switch.handle_key(Keystroke('x'))
+        self.assertEqual(self.switch.visualize_str(False), 'Test.opt3')
+        self.switch.handle_key(Keystroke('x'))
+        self.assertEqual(self.switch.visualize_str(False), 'Test.opt1')
+
+        self.switch.handle_key(Keystroke('z'))
+        self.assertEqual(self.switch.visualize_str(False), 'Test.opt3')
+        self.switch.handle_key(Keystroke('z'))
+        self.assertEqual(self.switch.visualize_str(False), 'Test.opt2')
+        self.switch.handle_key(Keystroke('z'))
+        self.assertEqual(self.switch.visualize_str(False), 'Test.opt1')

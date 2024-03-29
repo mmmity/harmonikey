@@ -2,6 +2,7 @@ from blessed import Terminal
 from blessed.keyboard import Keystroke
 from abc import ABC, abstractmethod
 from typing import Callable
+from enum import Enum, EnumType
 
 
 class Widget(ABC):
@@ -93,3 +94,53 @@ class TextInput(Widget):
 
         if len(self.input) < self.limit:
             self.input += key
+
+
+class Switch(Widget):
+    '''
+    This class represents switch widget.
+    Has Enum of options and current option.
+    Can switch back and forth using keys 'z' and 'x'
+    '''
+    def __init__(self, options: EnumType):
+        '''
+        Initializes options and current_option
+        '''
+        self.options: EnumType = options
+        self.current_option: int = 1
+
+    def visualize_str(self, is_active: bool) -> str:
+        '''
+        Returns name of current_option.
+        If is_active == True, it is highlighted with deepskyblue
+        '''
+        term = Terminal()
+        if is_active:
+            return term.on_deepskyblue3(str(self.options(self.current_option)))
+        return str(self.options(self.current_option))
+
+    def __move_forth(self):
+        '''
+        Switches current_option to next
+        '''
+        self.current_option %= len(self.options)
+        self.current_option += 1
+
+    def __move_back(self):
+        '''
+        Switches current_option to previous
+        '''
+        self.current_option -= 1
+        self.current_option += len(self.options) - 1
+        self.current_option %= len(self.options)
+        self.current_option += 1
+
+    def handle_key(self, key: Keystroke):
+        '''
+        If key is z, switches back, x - forth.
+        Otherwise does nothing
+        '''
+        if key == 'z':
+            self.__move_back()
+        elif key == 'x':
+            self.__move_forth()
