@@ -29,7 +29,8 @@ class Statistics:
     def get_current_time(self) -> int:
         '''
         Returns time elapsed since the beginning of Training
-        If training is over but self is still used, it should return time of Training end
+        If training is over but self is still used,
+        it should return time of Training end
         '''
         if self.frozen:
             return self.frozen_timer

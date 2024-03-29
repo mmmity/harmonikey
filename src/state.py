@@ -293,33 +293,53 @@ class AfterTraining(State):
             y_offset = 3
 
             if self.is_early:
-                text_to_print += term.center(term.bold(term.red('GAME OVER'))) + '\n'
+                msg = term.red('GAME OVER')
+                text_to_print += term.center(term.bold(msg))
             else:
-                text_to_print += term.center(term.bold(term.green('TRAINING DONE'))) + '\n'
-            
-            text_to_print += term.center('On text ' + term.bold(self.stats.text_tag) + ' for user ' + term.bold(self.stats.user) + ' with mode ' + term.bold(str(self.stats.mode)))
-            text_to_print += term.center(term.bold(format(self.stats.get_wpm(), '.2f')) + ' wpm, ' + term.bold(format(self.stats.get_cpm(), '.2f')) + ' cpm') + '\n'
-            text_to_print += term.center(term.bold(str(self.stats.word_count)) + ' words, ' + term.bold(str(self.stats.character_count)) + ' characters') + '\n'
-            text_to_print += term.center(term.bold(format(self.stats.get_elapsed_s(), '.2f')) + ' seconds')
+                msg = term.green('TRAINING DONE')
+                text_to_print += term.center(term.bold(msg))
+            text_to_print += '\n'
 
-            widgets_to_print = ''
+            text_to_print += term.center(
+                'On text ' + term.bold(self.stats.text_tag) +
+                ' for user ' + term.bold(self.stats.user) +
+                ' with mode ' + term.bold(str(self.stats.mode))
+            )
+
+            wpm_cpm = term.bold(format(self.stats.get_wpm(), '.2f'))
+            wpm_cpm += ' wpm, '
+            wpm_cpm += term.bold(format(self.stats.get_cpm(), '.2f'))
+            wpm_cpm += ' cpm'
+            text_to_print += term.center(wpm_cpm) + '\n'
+
+            words_chars = term.bold(str(self.stats.word_count))
+            words_char += ' words, '
+            words_chars += term.bold(str(self.stats.character_count))
+            words_chars += ' characters'
+            text_to_print += term.center(words_chars) + '\n'
+
+            elapsed = term.bold(format(self.stats.get_elapsed_s(), '.2f'))
+            text_to_print += term.center(elapsed + ' seconds')
+
+            widgets_str = ''
             if self.active_widget == 0:
-                widgets_to_print += term.ljust(self.widgets[0].visualize_str(True)) + term.rjust(self.widgets[1].visualize_str(False))
+                widgets_str += term.ljust(self.widgets[0].visualize_str(True))
+                widgets_str += term.rjust(self.widgets[1].visualize_str(False))
             else:
-                widgets_to_print += term.ljust(self.widgets[0].visualize_str(False)) + term.rjust(self.widgets[1].visualize_str(True))
-            
+                widgets_str += term.ljust(self.widgets[0].visualize_str(False))
+                widgets_str += term.rjust(self.widgets[1].visualize_str(True))
 
             print(term.clear + term.move_y(term.height // 2 - y_offset))
             print(text_to_print)
             print(term.move_y(term.height - 2))
-            print(widgets_to_print)
-
+            print(widgets_str)
 
     def handle_key(self, key: Keystroke):
         match key.name:
             case 'KEY_LEFT':
                 self.active_widget -= 1
-                self.active_widget = (self.active_widget + len(self.widgets)) % len(self.widgets)
+                self.active_widget += len(self.widgets)
+                self.active_widget %= len(self.widgets)
             case 'KEY_RIGHT':
                 self.active_widget += 1
                 self.active_widget %= len(self.widgets)
