@@ -9,6 +9,7 @@ from src.program import Program
 from src.exceptions import *
 from threading import Timer
 from src.widgets import Button, TextInput
+from typing import List
 
 
 class State(ABC):
@@ -229,3 +230,73 @@ class Training(State):
 
         output = words_before_text + word_center_text + ' ' + words_after_text
         print(term.move_xy(start_position, term.height // 2) + output)
+
+
+class AfterTraining(State):
+    '''
+    Class that represents state user gets directly after training.
+    Just shows some statistics about training.
+    Has two buttons: retry and main menu.
+    Also has statistics from training
+    and boolean 'is_early', which is True if training
+    ended prematurely (due to error if mode was DIE_ERRORS).
+    '''
+    def __main_menu(self):
+        self.switch(Exit(self.program))
+
+    def __restart(self):
+        textgen_type = TextgenType.FILE
+        filename = self.stats.text_tag
+        if self.stats.text_tag.startswith('RANDOM'):
+            textgen_type = TextgenType.RANDOM
+            filename = self.stats.text_tag[self.stats.text_tag.find('.') + 1:]
+
+        new_training = Training(
+            program=self.program,
+            gamemode=self.stats.mode,
+            train_filename=filename,
+            textgen_type=textgen_type,
+            timeout=self.stats.timeout
+        )
+
+        self.switch(new_training)
+
+    def __init__(self, program: Program, stats: Statistics, is_early: bool):
+        '''
+        Initializes all parameters
+        '''
+        super().__init__(program)
+        self.stats: Statistics = stats
+        self.is_early: bool = is_early
+        self.widgets: List[Button] = [
+            Button(self.__restart, 'Restart'),
+            Button(self.__main_menu, 'Main menu')
+        ]
+        self.active_widget: int = 0
+        self.__updated_since: bool = False
+        # This is used to optimize number of redraws
+
+    def visualize(self):
+        if not self.__updated_since:
+            self.__updated_since = True
+            term = Terminal()
+            text_to_print = ''
+            y_offset = 3
+            if self.is_early:
+                text_to_print += term.center(term.bold(term.red('GAME OVER'))) + '\n'
+            else:
+                text_to_print += term.center(term.bold(term.green('TRAINING DONE'))) + '\n'
+            
+            text_to_print += term.center(term.bold(format(self.stats.get_wpm(), '.2f')) + ' wpm, ' + term.bold(format(self.stats.get_cpm(), '.2f')) + ' cpm') + '\n'
+            text_to_print += term.center(term.bold(str(self.stats.word_count)) + ' words, ' + term.bold(str(self.stats.character_count)) + ' characters') + '\n'
+            # text_to_print += term.center(term.bold(str(self.stats.)))
+            print(term.clear + term.move_y(term.height // 2 - y_offset))
+            # text_to_print = term.center('anime') + '\n' + term.center('anime')
+            # print(term.move_y(2))
+            print(term.center(text_to_print))
+
+    def handle_key(self, key: Keystroke):
+        pass
+
+    def tick(self):
+        pass
