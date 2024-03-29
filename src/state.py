@@ -385,15 +385,19 @@ class BeforeTraining(State):
                 filename = 'assets/vocabs/' + self.text_filepath.input
             case _:
                 raise TypeError("Unknown TextgenType")
+        try:
+            training = Training(
+                program=self.program,
+                gamemode=self.gamemode_switch.get_current_option(),
+                user=self.player_name.input,
+                train_filename=filename,
+                textgen_type=self.textgentype_switch.get_current_option(),
+                timeout=self.timeout.int_input(),
+            )
+        except (FileNotFoundError, IsADirectoryError):
+            self.prev_error = f'File {filename} not found'
+            return
 
-        training = Training(
-            program=self.program,
-            gamemode=self.gamemode_switch.get_current_option(),
-            user=self.player_name.input,
-            train_filename=filename,
-            textgen_type=self.textgentype_switch.get_current_option(),
-            timeout=self.timeout.int_input(),
-        )
         self.switch(training)
 
     def __main_menu(self):
@@ -423,6 +427,9 @@ class BeforeTraining(State):
         self.begin_button = Button(self.__begin_training, begin_button_title)
         return_button_title = 'Main menu'
         self.return_button = Button(self.__main_menu, return_button_title)
+
+        self.prev_error: str = ''
+        # A property for displaying errors if occured.
 
         self.grid: List[List[Widget]] = [
             [self.player_name, self.gamemode_switch],
@@ -484,7 +491,11 @@ class BeforeTraining(State):
             text_to_print += term.ljust(timeout)
             text_to_print += '\n'
 
-            text_to_print += term.move_xy(0, term.height - 2)
+            text_to_print += term.move_xy(0, term.height - 3)
+
+            error_vis = term.bold(term.red(self.prev_error))
+            text_to_print += term.center(error_vis)
+            text_to_print += '\n'
 
             begin_button = self.begin_button.visualize_str(
                 self.active_widget() == (0, 3)
