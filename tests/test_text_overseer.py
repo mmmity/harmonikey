@@ -14,12 +14,12 @@ class TestTextOverseer(TestCase):
     def create_text_file(self, text: str):
         # Adding random bytes to filename
         # so no collisions with existing files happen
-        self.filename = random.randbytes(8).hex() + 'text'
-        with open(self.filename + '.txt', 'w') as text_file:
+        self.filename = random.randbytes(8).hex() + 'text.txt'
+        with open(self.filename, 'w') as text_file:
             text_file.write(text)
 
     def clean_up(self):
-        os.remove(self.filename + '.txt')
+        os.remove(self.filename)
 
     def setUp(self):
         self.create_text_file('Lorem ipsum')
@@ -32,6 +32,7 @@ class TestTextOverseer(TestCase):
             program=None,
             gamemode=Gamemode.NO_ERRORS,
             train_filename=self.filename,
+            user='mmmity',
             textgen_type=TextgenType.FILE,
             timeout=0.0
         )
@@ -57,6 +58,7 @@ class TestTextOverseer(TestCase):
             program=None,
             gamemode=Gamemode.NO_ERRORS,
             train_filename=self.filename,
+            user='mmmity',
             textgen_type=TextgenType.FILE,
             timeout=0.0
         )

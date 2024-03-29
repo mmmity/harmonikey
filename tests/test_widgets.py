@@ -49,7 +49,7 @@ class TestTextInput(unittest.TestCase):
         self.assertEqual(text_input.visualize_str(False), 'a')
 
         term = Terminal()
-        active_ans = term.on_deepskyblue3('a') + term.on_white(' ')
+        active_ans = term.on_cyan3('a') + term.on_white(' ')
         self.assertEqual(text_input.visualize_str(True), active_ans)
 
     def test_limit(self):
@@ -89,7 +89,7 @@ class TestSwitch(unittest.TestCase):
         term = Terminal()
         self.assertEqual(self.switch.visualize_str(False), 'Test.opt1')
 
-        active_expected = term.on_deepskyblue3('Test.opt1')
+        active_expected = term.on_cyan3('Test.opt1')
         self.assertEqual(self.switch.visualize_str(True), active_expected)
 
     def test_handle_key(self):
