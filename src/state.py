@@ -8,7 +8,7 @@ from src.text_generator import FileTextGenerator, \
 from src.program import Program
 from src.exceptions import *
 from threading import Timer
-from src.widgets import Widget, Button, TextInput, Switch
+from src.widgets import Widget, Button, TextInput, Switch, NumberInput
 from typing import List, Tuple
 
 
@@ -392,7 +392,7 @@ class BeforeTraining(State):
             user=self.player_name.input,
             train_filename=filename,
             textgen_type=self.textgentype_switch.get_current_option(),
-            timeout=0.0,
+            timeout=self.timeout.int_input(),
         )
         self.switch(training)
 
@@ -413,6 +413,8 @@ class BeforeTraining(State):
         self.player_name = TextInput(50, player_name_title)
         text_filepath_title = 'Input text file:assets/texts/'
         self.text_filepath = TextInput(50, text_filepath_title)
+        timeout_title = 'Input timeout (seconds):'
+        self.timeout = NumberInput(50, timeout_title, '0')
         gamemode_switch_title = 'Choose gamemode(z/x):'
         self.gamemode_switch = Switch(Gamemode, gamemode_switch_title)
         textgentype_switch_title = 'Choose text type(z/x):'
@@ -425,6 +427,7 @@ class BeforeTraining(State):
         self.grid: List[List[Widget]] = [
             [self.player_name, self.gamemode_switch],
             [self.text_filepath, self.textgentype_switch],
+            [self.timeout],
             [self.begin_button, self.return_button],
         ]
         self.active_widget_x: int = 0
@@ -460,7 +463,7 @@ class BeforeTraining(State):
                                          self.MAX_SWITCH_WIDTH)
             text_to_print += term.rjust(gamemode_switch)
 
-            text_to_print += '\n\n'
+            text_to_print += '\n'
 
             text_filepath = self.text_filepath.visualize_str(
                 self.active_widget() == (0, 1)
@@ -473,16 +476,23 @@ class BeforeTraining(State):
             textgentype_switch = term.ljust(textgentype_switch,
                                             self.MAX_SWITCH_WIDTH)
             text_to_print += term.rjust(textgentype_switch)
+            text_to_print += '\n'
+
+            timeout = self.timeout.visualize_str(
+                self.active_widget() == (0, 2)
+            )
+            text_to_print += term.ljust(timeout)
+            text_to_print += '\n'
 
             text_to_print += term.move_xy(0, term.height - 2)
 
             begin_button = self.begin_button.visualize_str(
-                self.active_widget() == (0, 2)
+                self.active_widget() == (0, 3)
             )
             text_to_print += term.ljust(begin_button)
 
             return_button = self.return_button.visualize_str(
-                self.active_widget() == (1, 2)
+                self.active_widget() == (1, 3)
             )
             text_to_print += term.rjust(return_button)
 
