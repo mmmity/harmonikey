@@ -61,12 +61,13 @@ class TextInput(Widget):
     Has currently inputted text as 'input' str.
     Also has limited length of input.
     '''
-    def __init__(self, limit: int):
+    def __init__(self, limit: int, title=''):
         '''
         Initializes input with empty string and limit with number
         '''
         self.input: str = ''
         self.limit: int = limit
+        self.title: str = title
 
     def visualize_str(self, is_active: bool) -> str:
         '''
@@ -76,8 +77,8 @@ class TextInput(Widget):
         '''
         term = Terminal()
         if is_active:
-            return term.on_deepskyblue3(self.input) + term.on_white(' ')
-        return self.input
+            return term.on_deepskyblue3(self.title + self.input) + term.on_white(' ')
+        return self.title + self.input
 
     def handle_key(self, key: Keystroke):
         '''
@@ -102,12 +103,13 @@ class Switch(Widget):
     Has Enum of options and current option.
     Can switch back and forth using keys 'z' and 'x'
     '''
-    def __init__(self, options: EnumType):
+    def __init__(self, options: EnumType, title: str = ''):
         '''
         Initializes options and current_option
         '''
         self.options: EnumType = options
         self.current_option: int = 1
+        self.title: str = title
 
     def visualize_str(self, is_active: bool) -> str:
         '''
@@ -116,8 +118,8 @@ class Switch(Widget):
         '''
         term = Terminal()
         if is_active:
-            return term.on_deepskyblue3(str(self.options(self.current_option)))
-        return str(self.options(self.current_option))
+            return term.on_deepskyblue3(self.title + str(self.options(self.current_option)))
+        return self.title + str(self.options(self.current_option))
 
     def __move_forth(self):
         '''
