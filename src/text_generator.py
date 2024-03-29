@@ -7,8 +7,11 @@ from src.exceptions import EndOfFile
 
 
 class TextgenType(Enum):
-    RANDOM = 0
-    FILE = 1
+    RANDOM = 1
+    # New word is chosen randomly from vocabulary
+
+    FILE = 2
+    # Words are consistently taken from text file
 
 
 class TextGenerator(abc.ABC):
