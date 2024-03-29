@@ -144,3 +144,6 @@ class Switch(Widget):
             self.__move_back()
         elif key == 'x':
             self.__move_forth()
+
+    def get_current_option(self):
+        return self.options(self.current_option)
