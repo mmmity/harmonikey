@@ -115,7 +115,7 @@ class Training(State):
         Does not save stats, just exits
         '''
         self.statistics.freeze()
-        self.switch(Exit())
+        self.switch(Exit(self.program))
 
     def __finish(self):
         '''
