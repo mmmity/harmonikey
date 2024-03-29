@@ -30,7 +30,7 @@ class TestButton(unittest.TestCase):
 class TestTextInput(unittest.TestCase):
 
     def test_handle(self):
-        text_input = TextInput()
+        text_input = TextInput(50)
 
         text_input.handle_key(Keystroke('a'))
         text_input.handle_key(Keystroke('b'))
@@ -42,7 +42,7 @@ class TestTextInput(unittest.TestCase):
         self.assertEqual(text_input.input, '')
 
     def test_visualize(self):
-        text_input = TextInput()
+        text_input = TextInput(50)
         text_input.handle_key(Keystroke('a'))
 
         self.assertEqual(text_input.visualize_str(False), 'a')
@@ -50,3 +50,11 @@ class TestTextInput(unittest.TestCase):
         term = Terminal()
         active_ans = term.on_deepskyblue3('a') + term.on_white(' ')
         self.assertEqual(text_input.visualize_str(True), active_ans)
+
+    def test_limit(self):
+        text_input = TextInput(2)
+        text_input.handle_key(Keystroke('a'))
+        text_input.handle_key(Keystroke('b'))
+        text_input.handle_key(Keystroke('c'))
+        text_input.handle_key(Keystroke('d'))
+        self.assertEqual(text_input.input, 'ab')

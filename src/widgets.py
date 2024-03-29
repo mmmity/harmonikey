@@ -58,12 +58,14 @@ class TextInput(Widget):
     '''
     Represents a one-row text input field.
     Has currently inputted text as 'input' str.
+    Also has limited length of input.
     '''
-    def __init__(self):
+    def __init__(self, limit: int):
         '''
-        Initializes input with empty string.
+        Initializes input with empty string and limit with number
         '''
-        self.input = ''
+        self.input: str = ''
+        self.limit: int = limit
 
     def visualize_str(self, is_active: bool) -> str:
         '''
@@ -89,4 +91,5 @@ class TextInput(Widget):
         if key.is_sequence:
             return
 
-        self.input += key
+        if len(self.input) < self.limit:
+            self.input += key
