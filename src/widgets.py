@@ -103,13 +103,16 @@ class TextInput(Widget):
 class NumberInput(TextInput):
     '''
     Like TextInput, but accepts only numbers.
-    Has int_input method, that returns int(input)
+    Has int_input method, that returns int(input).
+    Also has default str, which is visualized instead of input
+    if latter is empty.
     '''
-    def __init__(self, limit: int, title: str = ''):
+    def __init__(self, limit: int, title: str = '', default: str = ''):
         '''
         Just initializes TextInput.
         '''
         super().__init__(limit, title)
+        self.default: str = default
 
     @override
     def handle_key(self, key: Keystroke):
@@ -126,10 +129,29 @@ class NumberInput(TextInput):
         if len(self.input) < self.limit:
             self.input += key
 
+    @override
+    def visualize_str(self, is_active: bool) -> str:
+        '''
+        Returns input, or default if former is empty.
+        If active, text is highlighted with cyan
+        and the cursor is also highlighted.
+        '''
+        term = Terminal()
+        if self.input == '':
+            text = self.title + self.default
+        else:
+            text = self.title + self.input
+
+        if is_active:
+            return term.on_cyan3(text) + term.on_white(' ')
+        return text
+
     def int_input(self) -> int:
         '''
         Returns int(input)
         '''
+        if self.input == '':
+            return int(self.default)
         return int(self.input)
 
 
