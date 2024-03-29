@@ -397,12 +397,18 @@ class BeforeTraining(State):
         '''
         super().__init__(program)
 
-        self.player_name = TextInput(50, 'Input name:')
-        self.text_filepath = TextInput(50, 'Input text file without extension:assets/')
-        self.gamemode_switch = Switch(Gamemode, 'Choose gamemode(z/x):')
-        self.textgentype_switch = Switch(TextgenType, 'Choose text type(z/x):')
-        self.begin_button = Button(self.__begin_training, 'Begin')
-        self.return_button = Button(self.__main_menu, 'Main menu')
+        player_name_title = 'Input name:'
+        self.player_name = TextInput(50, player_name_title)
+        text_filepath_title = 'Input text file without extension:assets/'
+        self.text_filepath = TextInput(50, text_filepath_title)
+        gamemode_switch_title = 'Choose gamemode(z/x):'
+        self.gamemode_switch = Switch(Gamemode, gamemode_switch_title)
+        textgentype_switch_title = 'Choose text type(z/x):'
+        self.textgentype_switch = Switch(TextgenType, textgentype_switch_title)
+        begin_button_title = 'Begin'
+        self.begin_button = Button(self.__begin_training, begin_button_title)
+        return_button_title = 'Maine menu'
+        self.return_button = Button(self.__main_menu, return_button_title)
 
         self.grid: List[List[Widget]] = [
             [self.player_name, self.gamemode_switch],
@@ -427,28 +433,42 @@ class BeforeTraining(State):
             term = Terminal()
             text_to_print = term.move_y(term.height // 2)
 
-            player_name = self.player_name.visualize_str(self.active_widget() == (0, 0))
+            player_name = self.player_name.visualize_str(
+                self.active_widget() == (0, 0)
+            )
             text_to_print += term.ljust(player_name)
 
-            gamemode_switch = self.gamemode_switch.visualize_str(self.active_widget() == (1, 0))
-            gamemode_switch = term.ljust(gamemode_switch, self.MAX_SWITCH_WIDTH)
+            gamemode_switch = self.gamemode_switch.visualize_str(
+                self.active_widget() == (1, 0)
+            )
+            gamemode_switch = term.ljust(gamemode_switch,
+                                         self.MAX_SWITCH_WIDTH)
             text_to_print += term.rjust(gamemode_switch)
 
             text_to_print += '\n\n'
 
-            text_filepath = self.text_filepath.visualize_str(self.active_widget() == (0, 1))
+            text_filepath = self.text_filepath.visualize_str(
+                self.active_widget() == (0, 1)
+            )
             text_to_print += term.ljust(text_filepath)
 
-            textgentype_switch = self.textgentype_switch.visualize_str(self.active_widget() == (1, 1))
-            textgentype_switch = term.ljust(textgentype_switch, self.MAX_SWITCH_WIDTH)
+            textgentype_switch = self.textgentype_switch.visualize_str(
+                self.active_widget() == (1, 1)
+            )
+            textgentype_switch = term.ljust(textgentype_switch,
+                                            self.MAX_SWITCH_WIDTH)
             text_to_print += term.rjust(textgentype_switch)
 
             text_to_print += term.move_xy(0, term.height - 2)
 
-            begin_button = self.begin_button.visualize_str(self.active_widget() == (0, 2))
+            begin_button = self.begin_button.visualize_str(
+                self.active_widget() == (0, 2)
+            )
             text_to_print += term.ljust(begin_button)
 
-            return_button = self.return_button.visualize_str(self.active_widget() == (1, 2))
+            return_button = self.return_button.visualize_str(
+                self.active_widget() == (1, 2)
+            )
             text_to_print += term.rjust(return_button)
 
             print(term.clear + text_to_print)
@@ -470,7 +490,9 @@ class BeforeTraining(State):
                 self.active_widget_y += 1
                 self.active_widget_y %= len(self.grid)
             case _:
-                self.grid[self.active_widget_y][self.active_widget_x].handle_key(key)
+                widget = self.grid[self.active_widget_y][self.active_widget_x]
+                widget.handle_key(key)
+
         self.__updated_since = False
 
     def tick(self):

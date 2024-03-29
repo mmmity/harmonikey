@@ -76,9 +76,10 @@ class TextInput(Widget):
         and the cursor is also highlighted.
         '''
         term = Terminal()
+        text = self.title + self.input
         if is_active:
-            return term.on_deepskyblue3(self.title + self.input) + term.on_white(' ')
-        return self.title + self.input
+            return term.on_deepskyblue3(text) + term.on_white(' ')
+        return text
 
     def handle_key(self, key: Keystroke):
         '''
@@ -117,9 +118,10 @@ class Switch(Widget):
         If is_active == True, it is highlighted with deepskyblue
         '''
         term = Terminal()
+        text = self.title + str(self.options(self.current_option))
         if is_active:
-            return term.on_deepskyblue3(self.title + str(self.options(self.current_option)))
-        return self.title + str(self.options(self.current_option))
+            return term.on_deepskyblue3(text)
+        return text
 
     def __move_forth(self):
         '''
