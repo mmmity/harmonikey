@@ -8,8 +8,8 @@ from src.text_generator import FileTextGenerator, \
 from src.program import Program
 from src.exceptions import *
 from threading import Timer
-from src.widgets import Widget, Button, TextInput
-from typing import List
+from src.widgets import Widget, Button, TextInput, Switch
+from typing import List, Tuple
 
 
 class State(ABC):
@@ -93,7 +93,8 @@ class Training(State):
             self.statistics = Statistics(
                 user='mmmity',
                 text_tag='RANDOM.' + train_filename,
-                mode=gamemode
+                mode=gamemode,
+                timeout=self.timeout,
             )
             textgen = RandomTextGenerator(train_filename + '.txt', 4)
         else:
@@ -286,6 +287,10 @@ class AfterTraining(State):
         # This is used to optimize number of redraws
 
     def visualize(self):
+        '''
+        Prints statistics in center of screen.
+        Prints two buttons in left-bottom and right-bottom corners.
+        '''
         if not self.__updated_since:
             self.__updated_since = True
             term = Terminal()
@@ -313,7 +318,7 @@ class AfterTraining(State):
             text_to_print += term.center(wpm_cpm) + '\n'
 
             words_chars = term.bold(str(self.stats.word_count))
-            words_char += ' words, '
+            words_chars += ' words, '
             words_chars += term.bold(str(self.stats.character_count))
             words_chars += ' characters'
             text_to_print += term.center(words_chars) + '\n'
@@ -335,6 +340,10 @@ class AfterTraining(State):
             print(widgets_str)
 
     def handle_key(self, key: Keystroke):
+        '''
+        If key is left or right arrow, switches active button.
+        Otherwise does nothing.
+        '''
         match key.name:
             case 'KEY_LEFT':
                 self.active_widget -= 1
@@ -346,6 +355,122 @@ class AfterTraining(State):
             case _:
                 self.widgets[self.active_widget].handle_key(key)
 
+        self.__updated_since = False
+
+    def tick(self):
+        pass
+
+
+class BeforeTraining(State):
+    '''
+    State where training configuration is carried out
+    Has two textInputs for player name and text file path
+    Has two switches for choosing Gamemode and TextgenType
+    Has two buttons: begin training and return to main menu
+    Widgets are composed in grid, can be navigated left-right and top-bottom.
+    '''
+    MAX_SWITCH_WIDTH = 25
+
+    def __begin_training(self):
+        '''
+        Switches program to new training with inputted parameters.
+        '''
+        training = Training(
+            program=self.program,
+            gamemode=self.gamemode_switch.get_current_option(),
+            train_filename='assets/' + self.text_filepath.input,
+            textgen_type=self.textgentype_switch.get_current_option(),
+            timeout=0.0,
+        )
+        self.switch(training)
+
+    def __main_menu(self):
+        '''
+        Returns to main menu
+        '''
+        self.switch(Exit(self.program))
+
+    def __init__(self, program: Program):
+        '''
+        Initializes all present widgets.
+        Also groups them into grid for navigation.
+        '''
+        super().__init__(program)
+
+        self.player_name = TextInput(50, 'Input name:')
+        self.text_filepath = TextInput(50, 'Input text file without extension:assets/')
+        self.gamemode_switch = Switch(Gamemode, 'Choose gamemode(z/x):')
+        self.textgentype_switch = Switch(TextgenType, 'Choose text type(z/x):')
+        self.begin_button = Button(self.__begin_training, 'Begin')
+        self.return_button = Button(self.__main_menu, 'Main menu')
+
+        self.grid: List[List[Widget]] = [
+            [self.player_name, self.gamemode_switch],
+            [self.text_filepath, self.textgentype_switch],
+            [self.begin_button, self.return_button],
+        ]
+        self.active_widget_x: int = 0
+        self.active_widget_y: int = 0
+
+        self.__updated_since: bool = False
+
+    def active_widget(self) -> Tuple[int, int]:
+        return (self.active_widget_x, self.active_widget_y)
+
+    def visualize(self):
+        '''
+        Prints all widgets except buttons in center left and center right.
+        Prints buttons in left bottom and right bottom.
+        '''
+        if not self.__updated_since:
+            self.__updated_since = True
+            term = Terminal()
+            text_to_print = term.move_y(term.height // 2)
+
+            player_name = self.player_name.visualize_str(self.active_widget() == (0, 0))
+            text_to_print += term.ljust(player_name)
+
+            gamemode_switch = self.gamemode_switch.visualize_str(self.active_widget() == (1, 0))
+            gamemode_switch = term.ljust(gamemode_switch, self.MAX_SWITCH_WIDTH)
+            text_to_print += term.rjust(gamemode_switch)
+
+            text_to_print += '\n\n'
+
+            text_filepath = self.text_filepath.visualize_str(self.active_widget() == (0, 1))
+            text_to_print += term.ljust(text_filepath)
+
+            textgentype_switch = self.textgentype_switch.visualize_str(self.active_widget() == (1, 1))
+            textgentype_switch = term.ljust(textgentype_switch, self.MAX_SWITCH_WIDTH)
+            text_to_print += term.rjust(textgentype_switch)
+
+            text_to_print += term.move_xy(0, term.height - 2)
+
+            begin_button = self.begin_button.visualize_str(self.active_widget() == (0, 2))
+            text_to_print += term.ljust(begin_button)
+
+            return_button = self.return_button.visualize_str(self.active_widget() == (1, 2))
+            text_to_print += term.rjust(return_button)
+
+            print(term.clear + text_to_print)
+
+    def handle_key(self, key: Keystroke):
+        match key.name:
+            case 'KEY_LEFT':
+                self.active_widget_x -= 1
+                self.active_widget_x += len(self.grid[0])
+                self.active_widget_x %= len(self.grid[0])
+            case 'KEY_RIGHT':
+                self.active_widget_x += 1
+                self.active_widget_x %= len(self.grid[0])
+            case 'KEY_UP':
+                self.active_widget_y -= 1
+                self.active_widget_y += len(self.grid)
+                self.active_widget_y %= len(self.grid)
+            case 'KEY_DOWN':
+                self.active_widget_y += 1
+                self.active_widget_y %= len(self.grid)
+            case _:
+                self.grid[self.active_widget_y][self.active_widget_x].handle_key(key)
         self.__updated_since = False
 
     def tick(self):
