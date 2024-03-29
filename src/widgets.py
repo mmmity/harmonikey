@@ -72,13 +72,13 @@ class TextInput(Widget):
     def visualize_str(self, is_active: bool) -> str:
         '''
         Returns input.
-        If active, text is highlighted with deepskyblue
+        If active, text is highlighted with cyan
         and the cursor is also highlighted.
         '''
         term = Terminal()
         text = self.title + self.input
         if is_active:
-            return term.on_deepskyblue3(text) + term.on_white(' ')
+            return term.on_cyan3(text) + term.on_white(' ')
         return text
 
     def handle_key(self, key: Keystroke):
@@ -115,12 +115,12 @@ class Switch(Widget):
     def visualize_str(self, is_active: bool) -> str:
         '''
         Returns name of current_option.
-        If is_active == True, it is highlighted with deepskyblue
+        If is_active == True, it is highlighted with cyan
         '''
         term = Terminal()
         text = self.title + str(self.options(self.current_option))
         if is_active:
-            return term.on_deepskyblue3(text)
+            return term.on_cyan3(text)
         return text
 
     def __move_forth(self):
