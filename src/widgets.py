@@ -3,6 +3,8 @@ from blessed.keyboard import Keystroke
 from abc import ABC, abstractmethod
 from typing import Callable
 from enum import Enum, EnumType
+from typing_extensions import override
+from string import digits
 
 
 class Widget(ABC):
@@ -61,7 +63,7 @@ class TextInput(Widget):
     Has currently inputted text as 'input' str.
     Also has limited length of input.
     '''
-    def __init__(self, limit: int, title=''):
+    def __init__(self, limit: int, title: str = ''):
         '''
         Initializes input with empty string and limit with number
         '''
@@ -96,6 +98,39 @@ class TextInput(Widget):
 
         if len(self.input) < self.limit:
             self.input += key
+
+
+class NumberInput(TextInput):
+    '''
+    Like TextInput, but accepts only numbers.
+    Has int_input method, that returns int(input)
+    '''
+    def __init__(self, limit: int, title: str = ''):
+        '''
+        Just initializes TextInput.
+        '''
+        super().__init__(limit, title)
+
+    @override
+    def handle_key(self, key: Keystroke):
+        '''
+        Like from TextInput, but accepts only numeric characters.
+        '''
+
+        if key.name == 'KEY_BACKSPACE' or key.name == 'KEY_DELETE':
+            self.input = self.input[:-1]
+
+        if key.is_sequence or key not in digits:
+            return
+
+        if len(self.input) < self.limit:
+            self.input += key
+
+    def int_input(self) -> int:
+        '''
+        Returns int(input)
+        '''
+        return int(self.input)
 
 
 class Switch(Widget):
