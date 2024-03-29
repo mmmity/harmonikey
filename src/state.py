@@ -492,11 +492,11 @@ class BeforeTraining(State):
         match key.name:
             case 'KEY_LEFT':
                 self.active_widget_x -= 1
-                self.active_widget_x += len(self.grid[0])
-                self.active_widget_x %= len(self.grid[0])
+                self.active_widget_x += len(self.grid[self.active_widget_y])
+                self.active_widget_x %= len(self.grid[self.active_widget_y])
             case 'KEY_RIGHT':
                 self.active_widget_x += 1
-                self.active_widget_x %= len(self.grid[0])
+                self.active_widget_x %= len(self.grid[self.active_widget_y])
             case 'KEY_UP':
                 self.active_widget_y -= 1
                 self.active_widget_y += len(self.grid)
