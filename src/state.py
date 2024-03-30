@@ -249,7 +249,7 @@ class AfterTraining(State):
         '''
         Is called when 'Main menu' button is pressed.
         '''
-        self.switch(Exit(self.program))
+        self.switch(MainMenu(self.program))
 
     def __restart(self):
         '''
@@ -404,7 +404,7 @@ class BeforeTraining(State):
         '''
         Returns to main menu
         '''
-        self.switch(Exit(self.program))
+        self.switch(MainMenu(self.program))
 
     def __init__(self, program: Program):
         '''
@@ -510,6 +510,10 @@ class BeforeTraining(State):
             print(term.clear + text_to_print)
 
     def handle_key(self, key: Keystroke):
+        '''
+        If navigational key is pressed, changes active widget.
+        Otherwise passes key to active widget.
+        '''
         match key.name:
             case 'KEY_LEFT':
                 self.active_widget_x -= 1
@@ -532,8 +536,99 @@ class BeforeTraining(State):
         self.__updated_since = False
 
     def tick(self):
+        '''
+        Just some cosmetic feature for less typing for user.
+        Also we strictly forbid using paths other than assets/texts|vocabs.
+        '''
         match self.textgentype_switch.get_current_option():
             case TextgenType.FILE:
                 self.text_filepath.title = 'Input text file:assets/texts/'
             case TextgenType.RANDOM:
                 self.text_filepath.title = 'Input text file:assets/vocabs/'
+
+
+class MainMenu(State):
+    '''
+    Displays greeting.
+    Has 3 buttons: training, stats, exit.
+    They switch program to respective states.
+    '''
+    def __begin_training(self):
+        '''
+        Switches program state to BeforeTraining.
+        '''
+        self.switch(BeforeTraining(self.program))
+
+    def __show_stats(self):
+        pass
+
+    def __exit(self):
+        '''
+        Switches program state to Exit.
+        '''
+        self.switch(Exit(self.program))
+
+    def __init__(self, program: Program):
+        '''
+        Initializes greeting rows and buttons.
+        '''
+        super().__init__(program)
+
+        term = Terminal()
+        self.greeting_rows: List[str] = [
+            term.bold('Harmonikey'),
+            'A terminal-based application designed to help you improve your typing speed',
+            'Training button moves you to training configuration screen',
+            'Stats button shows you local statistics',
+            f'Created by {term.bold('mmmity')}: {term.link('https://github.com/mmmity', 'Github')}' 
+        ]
+
+        self.buttons: List[Button] = [
+            Button(self.__begin_training, 'Training'),
+            Button(self.__show_stats, 'Stats'),
+            Button(self.__exit, 'Exit')
+        ]
+        self.active_button = 0
+
+        self.__updated_since: bool = False
+
+    def visualize(self):
+        '''
+        Prints greeting in the middle of terminal.
+        Also prints all buttons in the bottom.
+        '''
+        if not self.__updated_since:
+            self.__updated_since = True
+
+            term = Terminal()
+            print(term.clear + term.move_y(2))
+
+            print('\n'.join(list(map(term.center, self.greeting_rows))))
+
+            print(term.move_y(term.height - 2))
+            
+            btns_vis = []
+            for idx, btn in enumerate(self.buttons):
+                btns_vis.append(btn.visualize_str(idx == self.active_button))
+            
+            print(term.center('  '.join(btns_vis)))
+
+    def handle_key(self, key: Keystroke):
+        '''
+        If key is left or right arrow, changes active button.
+        Otherwise redirects key to active button.
+        '''
+        if key.name == 'KEY_LEFT':
+            self.active_button -= 1
+            self.active_button += len(self.buttons)
+            self.active_button %= len(self.buttons)
+        elif key.name == 'KEY_RIGHT':
+            self.active_button += 1
+            self.active_button %= len(self.buttons)
+        else:
+            self.buttons[self.active_button].handle_key(key)
+
+        self.__updated_since = False
+
+    def tick(self):
+        pass

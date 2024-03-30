@@ -8,4 +8,4 @@ import src
 class Program:
 
     def __init__(self):
-        self.state = src.state.BeforeTraining(self)
+        self.state = src.state.MainMenu(self)
