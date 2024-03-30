@@ -3,8 +3,13 @@ on: push
 jobs:
     coverage:
         runs-on: ubuntu-latest
+        env:
+          OS: ubuntu-latest
+          PYTHON: '3.11'
         steps:
           - uses: actions/checkout@v4
+          - name: Install requirements
+            run: pip install -r requirements.txt
           - name: Create xml report
             run: |
               pip install coverage
