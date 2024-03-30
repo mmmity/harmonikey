@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from src.gamemodes import Gamemode
-from src.statistics import Statistics
+from src.statistics import Statistics, FileStatistics
 from blessed.keyboard import Keystroke
 from blessed import Terminal
 from src.text_generator import FileTextGenerator, \
@@ -560,7 +560,10 @@ class MainMenu(State):
         self.switch(BeforeTraining(self.program))
 
     def __show_stats(self):
-        pass
+        '''
+        Switches state to StatsScreen
+        '''
+        self.switch(StatsScreen(self.program))
 
     def __exit(self):
         '''
@@ -632,3 +635,183 @@ class MainMenu(State):
 
     def tick(self):
         pass
+
+
+class StatsScreen(State):
+    '''
+    Screen for displaying locally saved statistics.
+    Has three TextInputs: Stats file, Username, Training text file.
+    One switch for TextgenType.
+    Also a button to load statistics that match given input.
+    And a button to return to menu.
+    Right beneath all those inputs it displays all matching stats
+    sorted by decreasing wpm.
+    '''
+    def __main_menu(self):
+        '''
+        Returns to main menu.
+        '''
+        self.switch(MainMenu(self.program))
+
+    def __display_stats(self):
+        '''
+        Reloads stats_rows using parameters from inputs.
+        '''
+        self.error_message = ''
+        self.entries.clear()
+        try:
+            fs = FileStatistics()
+            fs.add_file('stats/' + self.stats_file.input)
+        except (FileNotFoundError, IsADirectoryError):
+            self.error_message = f'File stats/{self.stats_file.input} not found'
+            return
+        except TypeError:
+            self.error_message = 'Wrong file format'
+            return
+
+        username = self.username.input
+        text_tag = self.training_file.input
+        if text_tag != '':
+            match self.textgen_type.get_current_option():
+                case TextgenType.RANDOM:
+                    text_tag = 'RANDOM.assets/vocabs/' + text_tag
+                case TextgenType.FILE:
+                    text_tag = 'assets/texts/' + text_tag
+
+        if username != '':
+            if username not in fs.by_user.keys():
+                self.error_message = 'No entries for such user'
+                return
+            entries = fs.by_user[username]
+
+        else:
+            entries = fs.entries
+
+        if text_tag != '':
+            entries = list(filter(lambda entry: entry.text_tag == text_tag, entries))
+
+        if len(entries) == 0:
+            self.error_message = 'No entries for such user and text'
+            return
+
+        try:
+            entries.sort(key = lambda entry: -(entry.word_count / entry.time))
+        except ZeroDivisionError:
+            self.error_message = 'Wrong file format'
+            return
+        
+        self.entries = entries
+
+    def __init__(self, program: Program):
+        '''
+        Initializes all to be displayed.
+        '''
+        super().__init__(program)
+        self.entries: List[FileStatistics.Entry] = []
+
+        self.stats_file = TextInput(50, 'Input stats file:stats/')
+        self.stats_file.input = 'stats.csv'
+        self.username = TextInput(50, 'Input username (leave blank for all users):')
+        self.training_file = TextInput(50, 'Input training file (leave blank for all files):assets/vocabs/')
+        self.textgen_type = Switch(TextgenType, 'Choose type of text(z/x):')
+        self.display_button = Button(self.__display_stats, 'Show')
+        self.menu_button = Button(self.__main_menu, 'Main menu')
+        self.grid: List[List[Widget]] = [
+            [self.stats_file, self.textgen_type],
+            [self.username, self.display_button],
+            [self.training_file, self.menu_button]
+        ]
+        self.__active_widget_x: int = 0
+        self.__active_widget_y: int = 0
+
+        self.error_message: str = ''
+
+        self.__updated_since: bool = False
+
+    def __get_active_widget(self) -> Tuple[int, int]:
+        '''
+        Returns active widget position as tuple.
+        '''
+        return (self.__active_widget_x, self.__active_widget_y)
+
+    def __text_by_entry(self, entry: FileStatistics.Entry) -> str:
+        '''
+        Returns text representation of Entry.
+        '''
+        term = Terminal()
+        ans = ''
+        ans += f'user {term.bold(entry.user)} '
+        ans += f'on text {term.bold(entry.text_tag)}: '
+        ans += f'{term.bold(format(entry.time / Statistics.NANOSECONDS_IN_SECOND, '.2f'))} s, '
+        ans += f'{term.bold(format(entry.word_count * Statistics.NANOSECONDS_IN_MINUTE / entry.time, '.2f'))} wpm, '
+        ans += term.red(f'{term.bold(str(entry.error_count))} errors')
+        return term.center(ans)
+
+    def visualize(self):
+        '''
+        Visualizes widgets.
+        Displays as much entries as fit in terminal.
+        If error_message is not empty, displays it instead.
+        '''
+        if not self.__updated_since:
+            self.__updated_since = True
+
+            term = Terminal()
+
+            grid_text: str = ''
+            for i in range(3):
+                for j in range(2):
+                    vis = self.grid[i][j].visualize_str(self.__get_active_widget() == (j, i))
+                    if j == 0:
+                        grid_text += term.ljust(vis)
+                    else:
+                        grid_text += term.rjust(vis)
+                grid_text += '\n'
+            
+            print(term.clear + term.move_y(0))
+            print(grid_text + '\n')
+
+            below_text = ''
+            if self.error_message != '':
+                below_text += term.center(term.red(term.bold(self.error_message)))
+            else:
+                max_entries = term.height - term.get_location()[0] - 1
+                entries = self.entries[:max_entries]
+                below_text += '\n'.join(map(self.__text_by_entry, entries))
+            
+            print(below_text)
+
+    def handle_key(self, key: Keystroke):
+        '''
+        If key is arrow, changes active widget.
+        Otherwise passes it to active widget.
+        '''
+        match key.name:
+            case 'KEY_LEFT':
+                self.__active_widget_x -= 1
+                self.__active_widget_x += len(self.grid[self.__active_widget_y])
+                self.__active_widget_x %= len(self.grid[self.__active_widget_y])
+            case 'KEY_RIGHT':
+                self.__active_widget_x += 1
+                self.__active_widget_x %= len(self.grid[self.__active_widget_y])
+            case 'KEY_UP':
+                self.__active_widget_y -= 1
+                self.__active_widget_y += len(self.grid)
+                self.__active_widget_y %= len(self.grid)
+            case 'KEY_DOWN':
+                self.__active_widget_y += 1
+                self.__active_widget_y %= len(self.grid)
+            case _:
+                self.grid[self.__active_widget_y][self.__active_widget_x].handle_key(key)
+        self.__updated_since = False
+
+    def tick(self):
+        '''
+        Just some cosmetic feature for less typing for user.
+        Also we strictly forbid using paths other than assets/texts|vocabs.
+        '''
+        match self.textgen_type.get_current_option():
+            case TextgenType.FILE:
+                self.training_file.title = 'Input training file (leave blank for all files):assets/texts/'
+            case TextgenType.RANDOM:
+                self.training_file.title = 'Input training file (leave blank for all files):assets/vocabs/'
