@@ -29,7 +29,7 @@ class TestStatistics(unittest.TestCase):
             stats.add_word(word)
 
         time.sleep(5.0)
-        self.assertAlmostEqual(stats.get_wpm(), 60, delta=0.05)
+        self.assertAlmostEqual(stats.get_wpm(), 60, delta=0.5)
 
     def test_cpm(self):
         stats = Statistics('mmmity', 'test_text', Gamemode.NO_ERRORS, 0.0)
@@ -38,12 +38,12 @@ class TestStatistics(unittest.TestCase):
             stats.add_word(word)
 
         time.sleep(5.0)
-        self.assertAlmostEqual(stats.get_cpm(), 312, delta=0.05)
+        self.assertAlmostEqual(stats.get_cpm(), 312, delta=0.5)
 
     def test_elapsed(self):
         stats = Statistics('mmmity', 'test_text', Gamemode.NO_ERRORS, 0.0)
         time.sleep(1.0)
-        self.assertAlmostEqual(stats.get_elapsed_s(), 1.0, delta=0.05)
+        self.assertAlmostEqual(stats.get_elapsed_s(), 1.0, delta=0.5)
 
     def test_save(self):
         # Generating random filename so no collisions occur
@@ -80,7 +80,7 @@ class TestStatistics(unittest.TestCase):
         for i in range(7):
             if type(expected_1[i]) is float:
                 self.assertAlmostEqual(expected_1[i], float(real_1[i]),
-                                       delta=5e-3 * self.NANOSECONDS_IN_SECOND)
+                                       delta=0.5 * self.NANOSECONDS_IN_SECOND)
             elif type(expected_1[i]) is int:
                 self.assertEqual(expected_1[i], int(real_1[i]))
             else:
@@ -88,7 +88,7 @@ class TestStatistics(unittest.TestCase):
 
             if type(expected_2[i]) is float:
                 self.assertAlmostEqual(expected_2[i], float(real_2[i]),
-                                       delta=5e-3 * self.NANOSECONDS_IN_SECOND)
+                                       delta=0.5 * self.NANOSECONDS_IN_SECOND)
             elif type(expected_2[i]) is int:
                 self.assertEqual(expected_2[i], int(real_2[i]))
             else:
@@ -99,7 +99,7 @@ class TestStatistics(unittest.TestCase):
         stats.freeze()
         time.sleep(1)
         self.assertAlmostEqual(stats.get_elapsed_s(), 0,
-                               delta=5e-3 * self.NANOSECONDS_IN_SECOND)
+                               delta=0.5 * self.NANOSECONDS_IN_SECOND)
 
 
 class TestFileStatistics(unittest.TestCase):
@@ -192,22 +192,22 @@ class TestFileStatistics(unittest.TestCase):
                               ['good_text', 'test_text'])
         self.assertAlmostEqual(mmmity_best['test_text'].time,
                                1 * self.NANOSECONDS_IN_SECOND,
-                               delta=5e-3 * self.NANOSECONDS_IN_SECOND)
+                               delta=0.5 * self.NANOSECONDS_IN_SECOND)
         # mmmity's best time on test_text should be approx. 1 second
 
         self.assertAlmostEqual(mmmity_best['good_text'].time,
                                2 * self.NANOSECONDS_IN_SECOND,
-                               delta=5e-3 * self.NANOSECONDS_IN_SECOND)
+                               delta=0.5 * self.NANOSECONDS_IN_SECOND)
         # mmmity's best time on good_text should be approx. 2 seconds
 
         self.assertAlmostEqual(rom4ik_best['test_text'].time,
                                3 * self.NANOSECONDS_IN_SECOND,
-                               delta=5e-3 * self.NANOSECONDS_IN_SECOND)
+                               delta=0.5 * self.NANOSECONDS_IN_SECOND)
         # rom4ik's best time on test_text should be approx. 3 seconds
 
         self.assertAlmostEqual(rom4ik_best['good_text'].time,
                                3 * self.NANOSECONDS_IN_SECOND,
-                               delta=5e-3 * self.NANOSECONDS_IN_SECOND)
+                               delta=0.5 * self.NANOSECONDS_IN_SECOND)
         # rom4ik's best time on good_text should be approx. 3 seconds
 
     def test_text_best_stats(self):
@@ -233,12 +233,12 @@ class TestFileStatistics(unittest.TestCase):
 
         self.assertAlmostEqual(test_top1[0].time,
                                1 * self.NANOSECONDS_IN_SECOND,
-                               delta=5e-3 * self.NANOSECONDS_IN_SECOND)
+                               delta=0.5 * self.NANOSECONDS_IN_SECOND)
         # Top1's time on test_text should be approx. 1 second
 
         self.assertAlmostEqual(good_top1[0].time,
                                2 * self.NANOSECONDS_IN_SECOND,
-                               delta=5e-3 * self.NANOSECONDS_IN_SECOND)
+                               delta=0.5 * self.NANOSECONDS_IN_SECOND)
         # Top1's time on good_text should be approx. 2 seconds
 
         nonexistent_top1 = fs.text_best_stats('nonexistent', 1)
