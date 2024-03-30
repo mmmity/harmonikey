@@ -78,6 +78,23 @@ class TestNumberInput(unittest.TestCase):
         number_input.handle_key(Keystroke(name='KEY_BACKSPACE'))
         self.assertEqual(number_input.input, '1')
 
+    def test_visualize(self):
+        term = Terminal()
+        number_input = NumberInput(50, 'title', '12')
+        self.assertEqual(number_input.visualize_str(False), 'title12')
+
+        number_input.handle_key(Keystroke('1'))
+        self.assertEqual(number_input.visualize_str(False), 'title1')
+
+        active_exp = term.on_cyan3('title1') + term.on_white(' ')
+        self.assertEqual(number_input.visualize_str(True), active_exp)
+
+    def test_int_input(self):
+        number_input = NumberInput(50, 'title', '12')
+        self.assertEqual(number_input.int_input(), 12)
+        number_input.handle_key(Keystroke('1'))
+        self.assertEqual(number_input.int_input(), 1)
+
 
 class TestSwitch(unittest.TestCase):
 

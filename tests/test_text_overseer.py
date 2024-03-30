@@ -74,3 +74,41 @@ class TestTextOverseer(TestCase):
         overseer.handle_char(Keystroke('e'))
         self.assertEqual(overseer.input, 'Lore')
         self.assertEqual(overseer.error, '')
+
+    def test_fix_errors(self):
+        training = Training(
+            program=None,
+            gamemode=Gamemode.FIX_ERRORS,
+            train_filename=self.filename,
+            user='mmmity',
+            textgen_type=TextgenType.FILE,
+            timeout=0.0
+        )
+        overseer = training.text_overseer
+
+        for c in 'Lor':
+            overseer.handle_char(Keystroke(c))
+        overseer.handle_char(Keystroke('E'))
+        self.assertEqual(overseer.input, 'Lor')
+        self.assertEqual(overseer.error, 'E')
+        overseer.handle_char(Keystroke('e'))
+        self.assertEqual(overseer.error, 'Ee')
+        overseer.handle_char(Keystroke(name='KEY_BACKSPACE'))
+        self.assertEqual(overseer.error, 'E')
+        overseer.handle_char(Keystroke(name='KEY_DELETE'))
+        self.assertEqual(overseer.error, '')
+
+    def test_die_errors(self):
+        training = Training(
+            program=None,
+            gamemode=Gamemode.DIE_ERRORS,
+            train_filename=self.filename,
+            user='mmmity',
+            textgen_type=TextgenType.FILE,
+            timeout=0.0
+        )
+        overseer = training.text_overseer
+        for c in 'Lor':
+            overseer.handle_char(Keystroke(c))
+        with self.assertRaises(WrongCharacter):
+            overseer.handle_char(Keystroke('E'))

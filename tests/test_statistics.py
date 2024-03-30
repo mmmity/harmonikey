@@ -94,6 +94,13 @@ class TestStatistics(unittest.TestCase):
             else:
                 self.assertEqual(expected_2[i], real_2[i])
 
+    def test_freeze(self):
+        stats = Statistics('mmmity', 'test_text', Gamemode.NO_ERRORS, 0.0)
+        stats.freeze()
+        time.sleep(1)
+        self.assertAlmostEqual(stats.get_elapsed_s(), 0,
+                               delta=5e-3 * self.NANOSECONDS_IN_SECOND)
+
 
 class TestFileStatistics(unittest.TestCase):
     NANOSECONDS_IN_SECOND = 1000000000.0
@@ -101,6 +108,7 @@ class TestFileStatistics(unittest.TestCase):
     def create_files(self):
         self.file1_name = random.randbytes(8).hex() + 'stats.csv'
         self.file2_name = random.randbytes(8).hex() + 'stats.csv'
+        self.badfile_name = random.randbytes(8).hex() + 'badstats.csv'
 
         stats = [Statistics('mmmity', 'test_text', Gamemode.NO_ERRORS, 0.0),
                  Statistics('mmmity', 'test_text', Gamemode.FIX_ERRORS, 0.0),
@@ -114,17 +122,27 @@ class TestFileStatistics(unittest.TestCase):
                 s.add_word(w)
 
         time.sleep(1)
-        stats[1].save_to_file(self.file1_name)
+        stats[1].freeze()
         time.sleep(1)
-        stats[0].save_to_file(self.file2_name)
-        stats[2].save_to_file(self.file1_name)
+        stats[0].freeze()
+        stats[2].freeze()
         time.sleep(1)
+        stats[3].freeze()
+        stats[4].freeze()
+
         stats[3].save_to_file(self.file2_name)
         stats[4].save_to_file(self.file1_name)
+        stats[2].save_to_file(self.file1_name)
+        stats[0].save_to_file(self.file1_name)
+        stats[1].save_to_file(self.file1_name)
+
+        with open(self.badfile_name, 'w') as badfile:
+            badfile.write(';;;;;;;;;;;;;;')
 
     def clean_up(self):
         os.remove(self.file1_name)
         os.remove(self.file2_name)
+        os.remove(self.badfile_name)
 
     def setUp(self):
         self.create_files()
@@ -138,13 +156,13 @@ class TestFileStatistics(unittest.TestCase):
         self.assertEqual(len(fs.entries), 0)
 
         fs.add_file(self.file1_name)
-        self.assertEqual(len(fs.entries), 3)
+        self.assertEqual(len(fs.entries), 4)
         self.assertEqual(len(fs.by_user.keys()), 2)
         self.assertEqual(len(fs.by_text_tag.keys()), 2)
-        self.assertEqual(len(fs.by_user['mmmity']), 2)
+        self.assertEqual(len(fs.by_user['mmmity']), 3)
         self.assertEqual(len(fs.by_user['rom4ik']), 1)
         self.assertEqual(len(fs.by_text_tag['good_text']), 2)
-        self.assertEqual(len(fs.by_text_tag['test_text']), 1)
+        self.assertEqual(len(fs.by_text_tag['test_text']), 2)
 
         fs.add_file(self.file2_name)
         self.assertEqual(len(fs.entries), 5)
@@ -154,6 +172,9 @@ class TestFileStatistics(unittest.TestCase):
         self.assertEqual(len(fs.by_user['rom4ik']), 2)
         self.assertEqual(len(fs.by_text_tag['good_text']), 2)
         self.assertEqual(len(fs.by_text_tag['test_text']), 3)
+
+        with self.assertRaises(TypeError):
+            fs.add_file(self.badfile_name)
 
     def test_user_best_stats(self):
         fs = FileStatistics()
@@ -219,3 +240,6 @@ class TestFileStatistics(unittest.TestCase):
                                2 * self.NANOSECONDS_IN_SECOND,
                                delta=5e-3 * self.NANOSECONDS_IN_SECOND)
         # Top1's time on good_text should be approx. 2 seconds
+
+        nonexistent_top1 = fs.text_best_stats('nonexistent', 1)
+        self.assertEqual(len(nonexistent_top1), 0)
