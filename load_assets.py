@@ -14,4 +14,4 @@ if os.path.exists('stats/.gitkeep'):
     os.remove('stats/.gitkeep')
 
 if os.path.exists('assets/vocabs/.gitkeep'):
-    os.remove('stats/.gitkeep')
+    os.remove('assets/vocabs/.gitkeep')
