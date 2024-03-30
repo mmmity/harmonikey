@@ -147,7 +147,7 @@ class FileStatistics:
                         timeout=float(splitted[6]),
                         error_count=int(splitted[7])
                     )
-                except (IndexError, TypeError):
+                except (IndexError, TypeError, ValueError):
                     raise TypeError("Wrong file format")
                 new_entries.append(entry)
 
