@@ -55,7 +55,7 @@ A python-based application for typing practice with TUI (text user interface)
 
 ## Стек
 
-Python 3.11
+Python 3.12.2
 
 ## Зависимости
 
