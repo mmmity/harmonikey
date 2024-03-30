@@ -417,7 +417,7 @@ class BeforeTraining(State):
         self.player_name = TextInput(50, player_name_title)
         text_filepath_title = 'Input text file:assets/texts/'
         self.text_filepath = TextInput(50, text_filepath_title)
-        timeout_title = 'Input timeout (seconds):'
+        timeout_title = 'Input timeout (seconds, leave 0 for no timeout):'
         self.timeout = NumberInput(50, timeout_title, '0')
         gamemode_switch_title = 'Choose gamemode(z/x):'
         self.gamemode_switch = Switch(Gamemode, gamemode_switch_title)
