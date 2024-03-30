@@ -12,3 +12,6 @@ with open('assets/vocabs/top1000_english.txt', 'w') as voc_file:
 open('stats/stats.csv', 'a').close()
 if os.path.exists('stats/.gitkeep'):
     os.remove('stats/.gitkeep')
+
+if os.path.exists('assets/vocabs/.gitkeep'):
+    os.remove('stats/.gitkeep')
