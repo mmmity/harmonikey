@@ -8,8 +8,11 @@ jobs:
           - uses: actions/setup-python@v5
             with:
               python-version: '3.12.2'
-          - name: Install requirements
-            run: pip install -r requirements.txt
+          - name: Install dependencies
+            run: |
+              pip install -r requirements.txt
+              pip install setuptools
+
           - name: Run coverage
             run: |
               pip install coverage
