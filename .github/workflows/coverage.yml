@@ -4,9 +4,9 @@ jobs:
     coverage:
         runs-on: ubuntu-latest
         steps:
-          - name: Create xml report:
+          - name: Create xml report
             run: |
-              pip install unittest
+              pip install coverage
               coverage run -m unittest discover
               coverage xml
           - name: Get Cover 
