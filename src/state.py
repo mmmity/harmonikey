@@ -126,7 +126,7 @@ class Training(State):
         Saves stats to stats file.
         '''
         self.statistics.freeze()
-        self.statistics.save_to_file('stats.csv')
+        self.statistics.save_to_file('stats/stats.csv')
         self.switch(AfterTraining(self.program, self.statistics, False))
 
     def handle_key(self, key: Keystroke):
