@@ -580,10 +580,12 @@ class MainMenu(State):
         term = Terminal()
         self.greeting_rows: List[str] = [
             term.bold('Harmonikey'),
-            'A terminal-based application designed to help you improve your typing speed',
+            'A terminal-based application designed to \
+                help you improve your typing speed',
             'Training button moves you to training configuration screen',
             'Stats button shows you local statistics',
-            f'Created by {term.bold('mmmity')}: {term.link('https://github.com/mmmity', 'Github')}' 
+            f'Created by {term.bold('mmmity')}: \
+                {term.link('https://github.com/mmmity', 'Github')}'
         ]
 
         self.buttons: List[Button] = [
@@ -609,11 +611,11 @@ class MainMenu(State):
             print('\n'.join(list(map(term.center, self.greeting_rows))))
 
             print(term.move_y(term.height - 2))
-            
+
             btns_vis = []
             for idx, btn in enumerate(self.buttons):
                 btns_vis.append(btn.visualize_str(idx == self.active_button))
-            
+
             print(term.center('  '.join(btns_vis)))
 
     def handle_key(self, key: Keystroke):
@@ -663,7 +665,8 @@ class StatsScreen(State):
             fs = FileStatistics()
             fs.add_file('stats/' + self.stats_file.input)
         except (FileNotFoundError, IsADirectoryError):
-            self.error_message = f'File stats/{self.stats_file.input} not found'
+            self.error_message = f'File stats/{self.stats_file.input} \
+                not found'
             return
         except TypeError:
             self.error_message = 'Wrong file format'
@@ -688,18 +691,21 @@ class StatsScreen(State):
             entries = fs.entries
 
         if text_tag != '':
-            entries = list(filter(lambda entry: entry.text_tag == text_tag, entries))
+            entries = list(filter(
+                lambda entry: entry.text_tag == text_tag,
+                entries
+            ))
 
         if len(entries) == 0:
             self.error_message = 'No entries for such user and text'
             return
 
         try:
-            entries.sort(key = lambda entry: -(entry.word_count / entry.time))
+            entries.sort(key=lambda entry: -(entry.word_count / entry.time))
         except ZeroDivisionError:
             self.error_message = 'Wrong file format'
             return
-        
+
         self.entries = entries
 
     def __init__(self, program: Program):
@@ -709,13 +715,22 @@ class StatsScreen(State):
         super().__init__(program)
         self.entries: List[FileStatistics.Entry] = []
 
-        self.stats_file = TextInput(50, 'Input stats file:stats/')
+        stats_title = 'Input stats file:stats/'
+        self.stats_file = TextInput(50, stats_title)
         self.stats_file.input = 'stats.csv'
-        self.username = TextInput(50, 'Input username (leave blank for all users):')
-        self.training_file = TextInput(50, 'Input training file (leave blank for all files):assets/vocabs/')
-        self.textgen_type = Switch(TextgenType, 'Choose type of text(z/x):')
+
+        username_title = 'Input username (leave blank for all users):'
+        self.username = TextInput(50, username_title)
+
+        train_title = 'Input training file (leave blank for all files):assets/vocabs/'
+        self.training_file = TextInput(50, train_title)
+
+        textgen_type_title = 'Choose type of text(z/x):'
+        self.textgen_type = Switch(TextgenType, textgen_type_title)
+
         self.display_button = Button(self.__display_stats, 'Show')
         self.menu_button = Button(self.__main_menu, 'Main menu')
+
         self.grid: List[List[Widget]] = [
             [self.stats_file, self.textgen_type],
             [self.username, self.display_button],
@@ -743,7 +758,11 @@ class StatsScreen(State):
         ans += f'user {term.bold(entry.user)} '
         ans += f'on text {term.bold(entry.text_tag)}: '
         ans += f'{term.bold(format(entry.time / Statistics.NANOSECONDS_IN_SECOND, '.2f'))} s, '
-        ans += f'{term.bold(format(entry.word_count * Statistics.NANOSECONDS_IN_MINUTE / entry.time, '.2f'))} wpm, '
+        wpm = term.bold(format(
+            entry.word_count * Statistics.NANOSECONDS_IN_MINUTE / entry.time,
+            '.2f'
+        ))
+        ans += f'{wpm} wpm, '
         ans += term.red(f'{term.bold(str(entry.error_count))} errors')
         return term.center(ans)
 
@@ -767,7 +786,7 @@ class StatsScreen(State):
                     else:
                         grid_text += term.rjust(vis)
                 grid_text += '\n'
-            
+
             print(term.clear + term.move_y(0))
             print(grid_text + '\n')
 
@@ -778,7 +797,7 @@ class StatsScreen(State):
                 max_entries = term.height - term.get_location()[0] - 1
                 entries = self.entries[:max_entries]
                 below_text += '\n'.join(map(self.__text_by_entry, entries))
-            
+
             print(below_text)
 
     def handle_key(self, key: Keystroke):
@@ -810,8 +829,10 @@ class StatsScreen(State):
         Just some cosmetic feature for less typing for user.
         Also we strictly forbid using paths other than assets/texts|vocabs.
         '''
+        new_title = ''
         match self.textgen_type.get_current_option():
             case TextgenType.FILE:
-                self.training_file.title = 'Input training file (leave blank for all files):assets/texts/'
+                new_title = 'Input training file (leave blank for all files):assets/texts/'
             case TextgenType.RANDOM:
-                self.training_file.title = 'Input training file (leave blank for all files):assets/vocabs/'
+                new_title = 'Input training file (leave blank for all files):assets/vocabs/'
+        self.training_file.title = new_title
