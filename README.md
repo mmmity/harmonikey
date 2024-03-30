@@ -1,5 +1,7 @@
 # harmonikey
 
+![Coverage](./coverage.svg)
+
 A python-based application for typing practice with TUI (text user interface)
 
 МФТИ, Практикум Python 2024, 1 курс, Б05-328, Канухин Александр
