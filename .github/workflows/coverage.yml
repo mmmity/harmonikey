@@ -3,11 +3,11 @@ on: push
 jobs:
     coverage:
         runs-on: ubuntu-latest
-        env:
-          OS: ubuntu-latest
-          PYTHON: '3.11'
         steps:
           - uses: actions/checkout@v4
+          - uses: actions/setup-python@v5
+            with:
+              python-version: '3.11'
           - name: Install requirements
             run: pip install -r requirements.txt
           - name: Create xml report
