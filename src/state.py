@@ -580,12 +580,10 @@ class MainMenu(State):
         term = Terminal()
         self.greeting_rows: List[str] = [
             term.bold('Harmonikey'),
-            'A terminal-based application designed to \
-                help you improve your typing speed',
+            'A terminal-based application designed to help you improve your typing speed',
             'Training button moves you to training configuration screen',
             'Stats button shows you local statistics',
-            f'Created by {term.bold('mmmity')}: \
-                {term.link('https://github.com/mmmity', 'Github')}'
+            f'Created by {term.bold('mmmity')}: {term.link('https://github.com/mmmity', 'Github')}'
         ]
 
         self.buttons: List[Button] = [
