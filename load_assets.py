@@ -9,9 +9,6 @@ top1000_eng = req.get('https://gist.githubusercontent.com/deekayen/4148741/raw/9
 with open('assets/vocabs/top1000_english.txt', 'w') as voc_file:
     voc_file.write(top1000_eng.text)
 
-try:
-    os.makedirs('stats')
-except FileExistsError:
-    pass
-
 open('stats/stats.csv', 'a').close()
+if os.path.exists('stats/.gitkeep'):
+    os.remove('stats/.gitkeep')
