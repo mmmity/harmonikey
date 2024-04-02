@@ -1,12 +1,14 @@
 import unittest
 from unittest.mock import patch, MagicMock, Mock
-from src.state import Exit, Training, AfterTraining, BeforeTraining, MainMenu, StatsScreen
+from src.state import Exit, Training, AfterTraining, \
+                      BeforeTraining, MainMenu, StatsScreen
 from src.gamemodes import Gamemode
 from src.text_generator import TextgenType
 from blessed.keyboard import Keystroke
 import random
 import os
 import time
+
 
 class TestState(unittest.TestCase):
 
@@ -61,14 +63,14 @@ class TestTraining(unittest.TestCase):
             0.0
         )
         self.training2 = Training(
-            mockProgram2, 
+            mockProgram2,
             Gamemode.DIE_ERRORS,
             self.filename,
             'user',
             TextgenType.FILE,
             1.0
         )
-    
+
     def tearDown(self):
         self.clean_up()
 
@@ -248,7 +250,7 @@ class TestBeforeTraining(unittest.TestCase):
         for i in range(1, 5):
             self.bt.handle_key(Keystroke(name='KEY_DOWN'))
             self.assertEqual(self.bt.active_widget_y, i % 4)
-        
+
         for i in range(4, -1):
             self.bt.handle_key(Keystroke(name='KEY_UP'))
             self.assertEqual(self.bt.active_widget_y, i)
@@ -271,7 +273,7 @@ class TestMainMenu(unittest.TestCase):
         for i in range(1, 3):
             self.mm.handle_key(Keystroke(name='KEY_RIGHT'))
             self.assertEqual(self.mm.active_button, i % 3)
-        
+
         for i in range(2, -1):
             self.mm.handle_key(Keystroke(name='KEY_RIGHT'))
             self.assertEqual(self.mm.active_button, i)
@@ -290,7 +292,7 @@ class TestStatsScreen(unittest.TestCase):
         for i in range(1, 3):
             self.ss.handle_key(Keystroke(name='KEY_RIGHT'))
             self.assertEqual(self.ss._StatsScreen__active_widget_x, i % 2)
-        
+
         for i in range(1, -1):
             self.ss.handle_key(Keystroke(name='KEY_LEFT'))
             self.assertEqual(self.ss._StatsScreen__active_widget_x, i)
@@ -300,8 +302,7 @@ class TestStatsScreen(unittest.TestCase):
         for i in range(1, 4):
             self.ss.handle_key(Keystroke(name='KEY_DOWN'))
             self.assertEqual(self.ss._StatsScreen__active_widget_y, i % 3)
-        
+
         for i in range(2, -1):
             self.ss.handle_key(Keystroke(name='KEY_UP'))
             self.assertEqual(self.ss._StatsScreen__active_widget_y, i)
-

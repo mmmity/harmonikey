@@ -2,7 +2,7 @@ from blessed import Terminal
 from blessed.keyboard import Keystroke
 from abc import ABC, abstractmethod
 from typing import Callable
-from enum import Enum, EnumType
+from enum import EnumType
 from typing_extensions import override
 from string import digits
 

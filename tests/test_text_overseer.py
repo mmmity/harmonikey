@@ -1,11 +1,9 @@
 from unittest import TestCase
-from src.text_generator import FileTextGenerator, TextgenType
-from src.text_overseer import TextOverseer
+from src.text_generator import TextgenType
 from src.gamemodes import Gamemode
 from src.state import Training
 from src.exceptions import EndOfFile, WrongCharacter
 from blessed.keyboard import Keystroke
-from src.program import Program
 import random
 import os
 
