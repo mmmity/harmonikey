@@ -415,16 +415,24 @@ class BeforeTraining(State):
 
         player_name_title = 'Input name:'
         self.player_name = TextInput(50, player_name_title)
+        self.player_name.input = 'user'
+
         text_filepath_title = 'Input text file:assets/texts/'
         self.text_filepath = TextInput(50, text_filepath_title)
+        self.text_filepath.input = 'top1000_english.txt'
+
         timeout_title = 'Input timeout (seconds, leave 0 for no timeout):'
         self.timeout = NumberInput(50, timeout_title, '0')
+
         gamemode_switch_title = 'Choose gamemode(z/x):'
         self.gamemode_switch = Switch(Gamemode, gamemode_switch_title)
+
         textgentype_switch_title = 'Choose text type(z/x):'
         self.textgentype_switch = Switch(TextgenType, textgentype_switch_title)
+
         begin_button_title = 'Begin'
         self.begin_button = Button(self.__begin_training, begin_button_title)
+
         return_button_title = 'Main menu'
         self.return_button = Button(self.__main_menu, return_button_title)
 
