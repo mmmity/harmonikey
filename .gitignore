@@ -1,3 +1,5 @@
 .venv
 stats
 vocabs
+__pycache__
+htmlcov
