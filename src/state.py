@@ -2,12 +2,10 @@ from abc import ABC, abstractmethod
 from src.gamemodes import Gamemode
 from src.statistics import Statistics, FileStatistics
 from blessed.keyboard import Keystroke
-from blessed import Terminal
 from src.text_generator import FileTextGenerator, \
                                RandomTextGenerator, TextgenType
 from src.program import Program
 from src.exceptions import *
-from threading import Timer
 from src.widgets import Widget, Button, TextInput, Switch, NumberInput
 from typing import List, Tuple
 
@@ -59,7 +57,7 @@ class Exit(State):
         '''
         Clears everything before exiting.
         '''
-        term = Terminal()
+        term = self.program.term
         print(term.home + term.clear)
 
     def handle_key(self, key: Keystroke):
@@ -155,7 +153,7 @@ class Training(State):
         '''
         Only resets timer in the left top corner.
         '''
-        term = Terminal()
+        term = self.program.term
         # Terminal object that prints special characters
         print(term.home)
 
@@ -184,7 +182,7 @@ class Training(State):
         '''
         Visualizes training state.
         '''
-        term = Terminal()
+        term = self.program.term
         # Terminal object that prints special characters
 
         print(term.home + term.clear)
@@ -225,7 +223,7 @@ class Training(State):
         # Wrong characters are red
         # Highlighted character has white background
         # Untyped characters are gray (mistyrose)
-
+        # print(type(term.width))
         center_position = term.width // 2
         start_position = max(0, center_position -
                              len(self.text_overseer.current_word) // 2 -
@@ -295,7 +293,7 @@ class AfterTraining(State):
         '''
         if not self.__updated_since:
             self.__updated_since = True
-            term = Terminal()
+            term = self.program.term
             text_to_print = ''
             y_offset = 3
 
@@ -463,7 +461,7 @@ class BeforeTraining(State):
         '''
         if not self.__updated_since:
             self.__updated_since = True
-            term = Terminal()
+            term = self.program.term
             text_to_print = term.move_y(term.height // 2)
 
             player_name = self.player_name.visualize_str(
@@ -585,7 +583,7 @@ class MainMenu(State):
         '''
         super().__init__(program)
 
-        term = Terminal()
+        term = self.program.term
         self.greeting_rows: List[str] = [
             term.bold('Harmonikey'),
             'A terminal-based application designed to help you improve your typing speed',
@@ -611,7 +609,7 @@ class MainMenu(State):
         if not self.__updated_since:
             self.__updated_since = True
 
-            term = Terminal()
+            term = self.program.term
             print(term.clear + term.move_y(2))
 
             print('\n'.join(list(map(term.center, self.greeting_rows))))
@@ -759,7 +757,7 @@ class StatsScreen(State):
         '''
         Returns text representation of Entry.
         '''
-        term = Terminal()
+        term = self.program.term
         ans = ''
         ans += f'user {term.bold(entry.user)} '
         ans += f'on text {term.bold(entry.text_tag)}: '
@@ -781,7 +779,7 @@ class StatsScreen(State):
         if not self.__updated_since:
             self.__updated_since = True
 
-            term = Terminal()
+            term = self.program.term
 
             grid_text: str = ''
             for i in range(3):
