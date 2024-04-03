@@ -150,7 +150,7 @@ Python 3.12.2
 
 ## Запуск
 Установить зависимости: `pip install -r requirements.txt`
-Скачать ассеты: `PYTHONPATH=src python src/load_assets.py`, находясь в корне проекта (чтобы запускать все из папки src).
+Скачать ассеты: `PYTHONPATH=src python src/harmonikey_mmmity/load_assets.py`, находясь в корне проекта (чтобы запускать все из папки src).
 Запустить: `PYTHONPATH=src python src/harmonikey_mmmity/main.py`, находясь в корне проекта (чтобы запускать все из папки src)
 
 В терминале появится меню, в котором можно переключаться между кнопками и на Enter выбирать нужную кнопку.
