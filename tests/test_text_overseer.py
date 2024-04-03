@@ -1,8 +1,8 @@
 from unittest import TestCase
-from src.text_generator import TextgenType
-from src.gamemodes import Gamemode
-from src.state import Training
-from src.exceptions import EndOfFile, WrongCharacter
+from harmonikey_mmmity.text_generator import TextgenType
+from harmonikey_mmmity.gamemodes import Gamemode
+from harmonikey_mmmity.state import Training
+from harmonikey_mmmity.exceptions import EndOfFile, WrongCharacter
 from blessed.keyboard import Keystroke
 import random
 import os

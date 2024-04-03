@@ -1,7 +1,7 @@
 import unittest
 from blessed import Terminal
 from blessed.keyboard import Keystroke
-from src.widgets import Button, TextInput, NumberInput, Switch
+from harmonikey_mmmity.widgets import Button, TextInput, NumberInput, Switch
 from enum import Enum
 
 

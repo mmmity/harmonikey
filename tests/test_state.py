@@ -1,9 +1,9 @@
 import unittest
 from unittest.mock import patch, MagicMock, Mock
-from src.state import Exit, Training, AfterTraining, \
+from harmonikey_mmmity.state import Exit, Training, AfterTraining, \
                       BeforeTraining, MainMenu, StatsScreen
-from src.gamemodes import Gamemode
-from src.text_generator import TextgenType
+from harmonikey_mmmity.gamemodes import Gamemode
+from harmonikey_mmmity.text_generator import TextgenType
 from blessed.keyboard import Keystroke
 import random
 import os
@@ -12,7 +12,7 @@ import time
 
 class TestState(unittest.TestCase):
 
-    @patch('src.program.Program')
+    @patch('harmonikey_mmmity.program.Program')
     def test_switch(self, mockProgram):
         mp = mockProgram()
         state = Exit(mp)
@@ -28,7 +28,7 @@ class TestState(unittest.TestCase):
 
 class TestExit(unittest.TestCase):
 
-    @patch('src.program.Program')
+    @patch('harmonikey_mmmity.program.Program')
     def test_visualize(self, mockProgram):
         mp = mockProgram()
         exit = Exit(mp)
@@ -50,8 +50,8 @@ class TestTraining(unittest.TestCase):
     def clean_up(self):
         os.remove(self.filename)
 
-    @patch('src.program.Program')
-    @patch('src.program.Program')
+    @patch('harmonikey_mmmity.program.Program')
+    @patch('harmonikey_mmmity.program.Program')
     def setUp(self, mockProgram1, mockProgram2):
         self.create_text_file('a b')
         self.training1 = Training(
@@ -152,8 +152,8 @@ class TestAfterTraining(unittest.TestCase):
     def clean_up(self):
         os.remove(self.filename)
 
-    @patch('src.program.Program')
-    @patch('src.statistics.Statistics')
+    @patch('harmonikey_mmmity.program.Program')
+    @patch('harmonikey_mmmity.statistics.Statistics')
     def setUp(self, mockProgram, mockStats):
         self.at1 = AfterTraining(mockProgram, mockStats, True)
         self.at2 = AfterTraining(mockProgram, mockStats, False)
@@ -202,7 +202,7 @@ class TestAfterTraining(unittest.TestCase):
 
 class TestBeforeTraining(unittest.TestCase):
 
-    @patch('src.program.Program')
+    @patch('harmonikey_mmmity.program.Program')
     def setUp(self, mockProgram):
         self.bt = BeforeTraining(mockProgram)
         self.bt.program.state = self.bt
@@ -258,7 +258,7 @@ class TestBeforeTraining(unittest.TestCase):
 
 class TestMainMenu(unittest.TestCase):
 
-    @patch('src.program.Program')
+    @patch('harmonikey_mmmity.program.Program')
     def setUp(self, mockProgram):
         self.mm = MainMenu(mockProgram)
 
@@ -281,7 +281,7 @@ class TestMainMenu(unittest.TestCase):
 
 class TestStatsScreen(unittest.TestCase):
 
-    @patch('src.program.Program')
+    @patch('harmonikey_mmmity.program.Program')
     def setUp(self, mockProgram):
         self.ss = StatsScreen(mockProgram)
 

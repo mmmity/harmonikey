@@ -1,6 +1,6 @@
 import unittest
-from src.statistics import Statistics, FileStatistics
-from src.gamemodes import Gamemode
+from harmonikey_mmmity.statistics import Statistics, FileStatistics
+from harmonikey_mmmity.gamemodes import Gamemode
 import time
 import random
 import os

@@ -1,6 +1,6 @@
 import unittest
-from src.text_generator import RandomTextGenerator, FileTextGenerator
-from src.exceptions import EndOfFile
+from harmonikey_mmmity.text_generator import RandomTextGenerator, FileTextGenerator
+from harmonikey_mmmity.exceptions import EndOfFile
 import os
 import random
 

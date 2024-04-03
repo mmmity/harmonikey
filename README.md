@@ -161,4 +161,4 @@ Python 3.12.2
 
 ## Тесты и покрытие
 
-Для тестирования предлагается запустить `python -m unittest discover` при установленном модуле `unittest`
+Для тестирования предлагается запустить `PYTHONPATH=src python -m unittest discover` при установленном модуле `unittest` (чтобы запускать все из папки src)
