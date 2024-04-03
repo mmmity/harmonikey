@@ -1,12 +1,12 @@
 from abc import ABC, abstractmethod
-from src.gamemodes import Gamemode
-from src.statistics import Statistics, FileStatistics
+from gamemodes import Gamemode
+from statistics import Statistics, FileStatistics
 from blessed.keyboard import Keystroke
-from src.text_generator import FileTextGenerator, \
+from text_generator import FileTextGenerator, \
                                RandomTextGenerator, TextgenType
-from src.program import Program
-from src.exceptions import *
-from src.widgets import Widget, Button, TextInput, Switch, NumberInput
+from program import Program
+from exceptions import *
+from widgets import Widget, Button, TextInput, Switch, NumberInput
 from typing import List, Tuple
 
 
@@ -105,7 +105,7 @@ class Training(State):
             )
             textgen = FileTextGenerator(train_filename)
 
-        from src.text_overseer import TextOverseer
+        from text_overseer import TextOverseer
         self.text_overseer = TextOverseer(textgen, self)
 
     def __early_finish(self):

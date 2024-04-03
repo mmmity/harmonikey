@@ -1,6 +1,6 @@
-from src.program import Program
+from program import Program
 from blessed import Terminal
-from src.state import Exit
+from state import Exit
 
 def main():
 

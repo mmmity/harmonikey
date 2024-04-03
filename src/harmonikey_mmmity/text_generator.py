@@ -3,7 +3,7 @@ import typing
 import random
 from enum import Enum
 
-from src.exceptions import EndOfFile
+from exceptions import EndOfFile
 
 
 class TextgenType(Enum):

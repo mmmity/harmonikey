@@ -1,8 +1,8 @@
-from src.text_generator import TextGenerator
-from src.state import Training
+from text_generator import TextGenerator
+from state import Training
 from blessed import keyboard
-from src.gamemodes import Gamemode
-from src.exceptions import WrongCharacter
+from gamemodes import Gamemode
+from exceptions import WrongCharacter
 
 
 class TextOverseer:

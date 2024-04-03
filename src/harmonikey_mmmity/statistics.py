@@ -1,6 +1,6 @@
 import time
 from typing import NamedTuple, List, Dict
-from src.gamemodes import Gamemode
+from gamemodes import Gamemode
 
 
 class Statistics:
