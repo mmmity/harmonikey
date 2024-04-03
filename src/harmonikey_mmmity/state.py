@@ -1,12 +1,12 @@
 from abc import ABC, abstractmethod
-from gamemodes import Gamemode
-from statistics import Statistics, FileStatistics
+from harmonikey_mmmity.gamemodes import Gamemode
+from harmonikey_mmmity.statistics import Statistics, FileStatistics
 from blessed.keyboard import Keystroke
-from text_generator import FileTextGenerator, \
+from harmonikey_mmmity.text_generator import FileTextGenerator, \
                                RandomTextGenerator, TextgenType
-from program import Program
-from exceptions import *
-from widgets import Widget, Button, TextInput, Switch, NumberInput
+from harmonikey_mmmity.program import Program
+from harmonikey_mmmity.exceptions import *
+from harmonikey_mmmity.widgets import Widget, Button, TextInput, Switch, NumberInput
 from typing import List, Tuple
 
 
@@ -105,7 +105,7 @@ class Training(State):
             )
             textgen = FileTextGenerator(train_filename)
 
-        from text_overseer import TextOverseer
+        from harmonikey_mmmity.text_overseer import TextOverseer
         self.text_overseer = TextOverseer(textgen, self)
 
     def __early_finish(self):

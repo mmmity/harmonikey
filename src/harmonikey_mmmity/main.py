@@ -1,6 +1,6 @@
-from program import Program
+from harmonikey_mmmity.program import Program
 from blessed import Terminal
-from state import Exit
+import harmonikey_mmmity.state
 
 def main():
 
@@ -22,9 +22,9 @@ def main():
 
             program.state.tick()
             program.state.visualize()
-
-            if isinstance(program.state, Exit):
+            if isinstance(program.state, harmonikey_mmmity.state.Exit):
                 break
+    print('done')
 
 if __name__ == '__main__':
     main()

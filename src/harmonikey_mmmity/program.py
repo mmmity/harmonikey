@@ -5,5 +5,5 @@ class Program:
     def __init__(self):
         self.term = Terminal()
 
-        import state
-        self.state = state.MainMenu(self)
+        import harmonikey_mmmity.state
+        self.state = harmonikey_mmmity.state.MainMenu(self)

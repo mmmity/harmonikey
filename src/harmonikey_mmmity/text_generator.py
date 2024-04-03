@@ -3,7 +3,7 @@ import typing
 import random
 from enum import Enum
 
-from exceptions import EndOfFile
+from harmonikey_mmmity.exceptions import EndOfFile
 
 
 class TextgenType(Enum):

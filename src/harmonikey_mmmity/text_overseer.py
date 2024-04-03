@@ -1,8 +1,8 @@
-from text_generator import TextGenerator
-from state import Training
+from harmonikey_mmmity.text_generator import TextGenerator
+from harmonikey_mmmity.state import Training
 from blessed import keyboard
-from gamemodes import Gamemode
-from exceptions import WrongCharacter
+from harmonikey_mmmity.gamemodes import Gamemode
+from harmonikey_mmmity.exceptions import WrongCharacter
 
 
 class TextOverseer:

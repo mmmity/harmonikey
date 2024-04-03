@@ -1,6 +1,6 @@
 import time
 from typing import NamedTuple, List, Dict
-from gamemodes import Gamemode
+from harmonikey_mmmity.gamemodes import Gamemode
 
 
 class Statistics:
