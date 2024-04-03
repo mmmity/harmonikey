@@ -2,7 +2,7 @@ from src.program import Program
 from blessed import Terminal
 from src.state import Exit
 
-if __name__ == '__main__':
+def main():
 
     term = Terminal()
 
@@ -25,3 +25,6 @@ if __name__ == '__main__':
 
             if isinstance(program.state, Exit):
                 break
+
+if __name__ == '__main__':
+    main()
