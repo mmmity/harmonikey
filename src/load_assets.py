@@ -6,6 +6,20 @@ def download_write_file(filepath: str, url: str):
     with open(filepath, 'w') as voc_file:
         voc_file.write(out_req.text)
 
+def mkdir_if_not_exists(path: str):
+    names = path.split('/')
+    current_dir = os.getcwd()
+    for name in names:
+        if not os.path.exists(name):
+            os.mkdir(name)
+        os.chdir(name)
+        print(os.getcwd())
+    os.chdir(current_dir)
+
+
+mkdir_if_not_exists('stats')
+mkdir_if_not_exists('assets/vocabs')
+mkdir_if_not_exists('assets/texts')
 
 download_write_file(
     'assets/vocabs/top10000_english_long.txt',
