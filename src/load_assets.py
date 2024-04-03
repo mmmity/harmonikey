@@ -16,24 +16,28 @@ def mkdir_if_not_exists(path: str):
         print(os.getcwd())
     os.chdir(current_dir)
 
+def load_assets():
 
-mkdir_if_not_exists('stats')
-mkdir_if_not_exists('assets/vocabs')
-mkdir_if_not_exists('assets/texts')
+    mkdir_if_not_exists('stats')
+    mkdir_if_not_exists('assets/vocabs')
+    mkdir_if_not_exists('assets/texts')
 
-download_write_file(
-    'assets/vocabs/top10000_english_long.txt',
-    'https://raw.githubusercontent.com/first20hours/google-10000-english/master/google-10000-english-usa-no-swears-long.txt'
-)
+    download_write_file(
+        'assets/vocabs/top10000_english_long.txt',
+        'https://raw.githubusercontent.com/first20hours/google-10000-english/master/google-10000-english-usa-no-swears-long.txt'
+    )
 
-download_write_file(
-    'assets/vocabs/top1000_english.txt',
-    'https://gist.githubusercontent.com/deekayen/4148741/raw/98d35708fa344717d8eee15d11987de6c8e26d7d/1-1000.txt'
-)
+    download_write_file(
+        'assets/vocabs/top1000_english.txt',
+        'https://gist.githubusercontent.com/deekayen/4148741/raw/98d35708fa344717d8eee15d11987de6c8e26d7d/1-1000.txt'
+    )
 
-open('stats/stats.csv', 'a').close()
-if os.path.exists('stats/.gitkeep'):
-    os.remove('stats/.gitkeep')
+    open('stats/stats.csv', 'a').close()
+    if os.path.exists('stats/.gitkeep'):
+        os.remove('stats/.gitkeep')
 
-if os.path.exists('assets/vocabs/.gitkeep'):
-    os.remove('assets/vocabs/.gitkeep')
+    if os.path.exists('assets/vocabs/.gitkeep'):
+        os.remove('assets/vocabs/.gitkeep')
+
+if __name__ == '__main__':
+    load_assets()
